@@ -46,7 +46,9 @@ To query costs, models or prompts from past AI assistant runs open Arize Phoenix
 ![arize-filtering](../img/arize_filterLLM.png)
 
 
-#### Filters
+import Details from '@theme/Details';
+
+<Details summary="Advanced: View tracking filters for specific Cases or Tasks">
 
 If you like to dig deeper. Note that it's possible to track AI interactions over a complete Case or Task.
 You can reveal them by adding a filter, expressing the UUID of the Case respectively the Task.
@@ -58,6 +60,8 @@ You can reveal them by adding a filter, expressing the UUID of the Case respecti
 - Task with UUID 2afa6db6-35d6-4f72-af05-711963888b0b:
 
   `span_kind == 'LLM' and ivy.task == '2afa6db6-35d6-4f72-af05-711963888b0b'`
+
+</Details>
 
 
 ## AI-assisted Custom Fields

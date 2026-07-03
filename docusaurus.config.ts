@@ -25,14 +25,22 @@ const config: Config = {
   organizationName: 'facebook', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
-    locales: ['en'],
+    locales: ['en', 'de'],
+    localeConfigs: {
+      en: {
+        htmlLang: 'en-US',
+      },
+      de: {
+        htmlLang: 'de-DE',
+      },
+    }
   },
 
   presets: [
@@ -93,6 +101,10 @@ const config: Config = {
           label: 'GitHub',
           position: 'right',
         },
+        {
+          type: "localeDropdown",
+          position: 'right'
+        }
       ],
     },
     footer: {
