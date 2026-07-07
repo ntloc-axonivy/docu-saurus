@@ -1,58 +1,58 @@
-# Dev Container
+# Entwicklungscontainer
 
-Our Smart-Workflow development environment is accessible via a Dev Container. The container removes the complexity of setting up your workspace and provides sidecar services like [RAG](../RAG.md) (OpenSearch) or [Tracing](../observe/OBSERVE.md) via third-party tools.
+Auf unsere Smart-Workflow-Entwicklungsumgebung kann über einen Dev-Container zugegriffen werden. Der Container vereinfacht die Einrichtung Ihres Arbeitsbereichs und stellt Sidecar-Dienste wie [RAG](../RAG.md) (OpenSearch) oder [Tracing](../observe/OBSERVE.md) über Tools von Drittanbietern bereit.
 
-Therefore, the Dev Container is perfect for:
-- new users that want to explore the full capabilities of Smart-Workflow
-- developers that want to avoid the "runs on my machine" disappointment when going to Q&A and production
+Daher eignet sich der Dev Container ideal für:
+- neue Nutzer, die die gesamten Funktionen von Smart-Workflow erkunden möchten
+- Entwickler, die bei der Übergabe an den Q&A- und den Produktionsbereich die Enttäuschung vermeiden wollen, dass es „auf meinem Rechner läuft“
 
-## Local machine
+## Lokaler Rechner
 
-Your local machine can run the Smart-Workflow Dev Container with a few simple steps. Locally run, this produces no costs and leverages the power of your hardware.
+Auf Ihrem lokalen Rechner lässt sich der Smart-Workflow-Dev-Container mit wenigen einfachen Schritten ausführen. Bei lokaler Ausführung entstehen keine Kosten, und Sie nutzen die Leistungsfähigkeit Ihrer Hardware.
 
-### Requirements
+### Anforderungen
 
-- Docker must be installed and running (Docker Desktop on macOS/Windows, or Docker Engine on Linux).
-- VS Code with the **Dev Containers** extension (`ms-vscode-remote.remote-containers`) is recommended.
+- Docker muss installiert sein und laufen (Docker Desktop unter macOS/Windows oder Docker Engine unter Linux).
+- Es wird empfohlen, VS Code mit der Erweiterung „ **Dev Containers“** (`ms-vscode-remote.remote-containers`) zu verwenden.
 
-### Start locally in VS Code
+### Lokal in VS Code starten
 
-1. Clone this repository to your machine.
-2. Open the repository folder in VS Code.
-3. Run **Dev Containers: Reopen in Container** from the command palette.
-4. Wait until you see the Axon Ivy Welcome page (this can take a few minutes).
-5. Enter your API key in `smart-workflow-test/config/variables.yaml` via Import `AI.Providers.OpenAI.APIKey`.
+1. Kopiere dieses Repository auf deinen Rechner.
+2. Öffnen Sie den Repository-Ordner in VS Code.
+3. Führen Sie „ **“ aus und starten Sie die Dev-Container: Öffnen Sie „** “ im Container über die Befehlspalette erneut.
+4. Warten Sie, bis die Axon Ivy-Startseite angezeigt wird (dies kann einige Minuten dauern).
+5. Geben Sie Ihren API-Schlüssel unter `smart-workflow-test/config/variables.yaml` über „Importieren“ `AI.Providers.OpenAI.APIKey` ein.
 
-## GitHub hosted
+## Auf GitHub gehostet
 
-To run a Smart-Workflow dev environment no local environment is required. You can run it right in the browser, hosted by GitHub.
+Um eine Smart-Workflow-Entwicklungsumgebung zu nutzen, ist keine lokale Umgebung erforderlich. Sie können sie direkt im Browser ausführen, gehostet von GitHub.
 
 ![gh-init](../img/devcontainer-codespace-init.png)
 
-### How to start
+### So fangen Sie an
 
-1. Open the repository in GitHub.
-2. Click the green **Code** button and open the **Codespaces** tab.
-3. Click the `...` menu (or **Configure and create codespace**) to select options before launch.
-4. Set the machine type to a **4-core** option.
-5. Create the codespace and wait until VS Code starts.
-6. Wait until you see the Axon Ivy Welcome page (this can take 5-10 minutes).
-7. Enter your API key in `smart-workflow-test/config/variables.yaml`
-8. Run a demo from smart-workflow-demos or start developing your feature.
+1. Öffne das Repository auf GitHub.
+2. Klicken Sie auf die Schaltfläche „ **-Code“** und öffnen Sie die Registerkarte „ **-Codespaces“**.
+3. Klicken Sie auf das Menü „ ` “ …` (oder **„Codespace konfigurieren und erstellen“**), um vor dem Start Optionen auszuwählen.
+4. Stellen Sie den Maschinentyp auf eine „ **“-Option mit 4 Kernen und „** “ ein.
+5. Erstellen Sie den Codespace und warten Sie, bis VS Code gestartet ist.
+6. Warten Sie, bis die Axon Ivy-Startseite angezeigt wird (dies kann 5–10 Minuten dauern).
+7. Geben Sie Ihren API-Schlüssel unter `smart-workflow-test/config/variables.yaml ein.`
+8. Führen Sie eine Demo aus dem Verzeichnis „smart-workflow-demos“ aus oder beginnen Sie mit der Entwicklung Ihrer Funktion.
 
-### Cost tip
+### Kostentipp
 
-To avoid unexpected costs, stop your codespace as soon as your session is finished. In GitHub, open the **Codespaces** page and choose **Stop codespace** for inactive environments instead of leaving them running in the background.
+Um unerwartete Kosten zu vermeiden, beenden Sie Ihren Codespace, sobald Ihre Sitzung beendet ist. Öffnen Sie in GitHub die Seite „ **“ unter „Codespaces“ (** ) und wählen Sie „ **“ („Codespace beenden“) (** ) für inaktive Umgebungen, anstatt diese im Hintergrund weiterlaufen zu lassen.
 
-### Sidecar services
+### Beifahrer-Dienste
 
-The Dev Container starts these services automatically:
+Der Dev-Container startet diese Dienste automatisch:
 
-| Service      | Image                                         | Port   | Purpose                                                                                                                        |
-| ------------ | --------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `workspace`  | `mcr.microsoft.com/devcontainers/base:trixie` | –      | Your VS Code workspace with Java, Maven, and the Axon Ivy engine.                                                              |
-| `phoenix`    | `arizephoenix/phoenix:nightly`                | `6006` | OpenInference tracing UI — see [Tracing](../observe/OBSERVE.md).                                                               |
-| `opensearch` | `opensearchproject/opensearch:2.11.0`         | `9200` | Vector store for [RAG](../RAG.md). Started with security disabled and `discovery.type=single-node` for local development only. |
+| Service          | Bild                                          | Hafen  | Zweck                                                                                                                                                                |
+| ---------------- | --------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Arbeitsbereich` | `mcr.microsoft.com/devcontainers/base:trixie` | –      | Ihr VS Code-Arbeitsbereich mit Java, Maven und der Axon Ivy-Engine.                                                                                                  |
+| `Phoenix`        | `arizephoenix/phoenix:nightly`                | `6006` | OpenInference-Tracing-Benutzeroberfläche – siehe [Tracing](../observe/OBSERVE.md).                                                                                   |
+| `opensearch`     | `opensearchproject/opensearch:2.11.0`         | `9200` | Vektorspeicher für [RAG](../RAG.md). Startete mit deaktivierter Sicherheit und „ `“ sowie „discovery.type=single-node“` – ausschließlich für die lokale Entwicklung. |
 
 
-> **Note:** OpenSearch memory is capped at 512 MB (`OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m`) to keep the dev container lightweight. Raise this value in `.devcontainer/compose.yml` if you ingest large datasets.
+> **Hinweis:** Der OpenSearch-Speicher ist auf 512 MB begrenzt (`OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m`), um den Entwicklungscontainer schlank zu halten. Erhöhen Sie diesen Wert in `.devcontainer/compose.yml`, wenn Sie große Datensätze einlesen.
