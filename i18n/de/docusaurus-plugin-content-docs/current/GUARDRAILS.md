@@ -1,103 +1,103 @@
-# Guardrails
+# Leitplanken
 
-Guardrails protect AI agents by validating both user input and AI output. Smart Workflow provides built-in guardrails for common safety concerns and supports custom guardrails via SPI.
+Sicherheitsvorkehrungen schützen KI-Agenten, indem sie sowohl Benutzereingaben als auch KI-Ausgaben überprüfen. Smart Workflow bietet integrierte Sicherheitsvorkehrungen für gängige Sicherheitsbedenken und unterstützt benutzerdefinierte Sicherheitsvorkehrungen über SPI.
 
-**Built-in Guardrails:**
+**Integrierte Leitplanken:**
 
-| Guardrail                         | Type   | Description                                                                                                                                                                               |
-| --------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PromptInjectionInputGuardrail`   | Input  | Blocks common prompt injection attacks using regex patterns. Low latency, no LLM cost. Use as a basic first line of defence.                                                              |
-| `AiPromptInjectionInputGuardrail` | Input  | LLM-based classifier that catches subtle injections missed by regex — roleplay jailbreaks, authority spoofing, narrative payloads, gradual drift. Use when stricter protection is needed. |
-| `SensitiveDataOutputGuardrail`    | Output | Blocks responses containing API keys or private keys                                                                                                                                      |
+| Leitplanke                                       | Typ     | Beschreibung                                                                                                                                                                                                                                                 |
+| ------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `PromptInjectionInputGuardrail`                  | Eingabe | Blockiert gängige Prompt-Injection-Angriffe mithilfe von Regex-Mustern. Geringe Latenz, keine LLM-Kosten. Als grundlegende erste Verteidigungslinie einsetzbar.                                                                                              |
+| `AiPromptInjectionInputGuardrail`                | Eingabe | LLM-basierter Klassifikator, der subtile Injektionen erkennt, die von regulären Ausdrücken übersehen werden – Roleplay-Jailbreaks, Autoritäts-Spoofing, narrative Payloads, schrittweise Abweichungen. Einsatz, wenn ein strengerer Schutz erforderlich ist. |
+| `Schutzmaßnahme für die Ausgabe sensibler Daten` | Ausgabe | Blockiert Antworten, die API-Schlüssel oder private Schlüssel enthalten                                                                                                                                                                                      |
 
-### Choosing an Input Guardrail
+### Auswahl einer Eingabeschutzbarriere
 
-|                      | `PromptInjectionInputGuardrail` | `AiPromptInjectionInputGuardrail`                                                                   |
-| -------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Detection method** | Regex patterns                  | LLM classifier                                                                                      |
-| **Catches**          | Keyword-based attacks           | All of the above + roleplay, authority claims, narrative payloads, obfuscation                      |
-| **False positives**  | Low (narrowed patterns)         | Very low (intent-aware)                                                                             |
-| **Latency**          | ~0 ms                           | +LLM call per message                                                                               |
-| **Cost**             | Free                            | Token cost (use `AI.Guardrails.PromptInjection.Classifier.Provider` + `Model` to pin a cheap model) |
-| **When to use**      | Default / general use           | High-security deployments, customer-facing chatbots                                                 |
+|                                         | `PromptInjectionInputGuardrail`  | `AiPromptInjectionInputGuardrail`                                                                                                     |
+| --------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Nachweismethode**                     | Regex-Muster                     | LLM-Klassifikator                                                                                                                     |
+| **Fänge**                               | Schlüsselwortbasierte Angriffe   | All das oben Genannte + Rollenspiele, Autoritätsbehauptungen, narrative Botschaften, Verschleierungstaktiken                          |
+| **Falsch-positive Ergebnisse**          | Niedrig (verengte Muster)        | Sehr gering (absichtsorientiert)                                                                                                      |
+| **Latenz**                              | ~0 ms                            | +LLM-Aufruf pro Nachricht                                                                                                             |
+| **Kosten**                              | Kostenlos                        | Token-Kosten (verwenden Sie `AI.Guardrails.PromptInjection.Classifier.Provider` + `Model`, um ein kostengünstiges Modell festzulegen) |
+| **Wann ist die Verwendung angebracht?** | Standard / allgemeine Verwendung | Hochsichere Implementierungen, Chatbots mit Kundenkontakt                                                                             |
 
-### Configuring `AiPromptInjectionInputGuardrail`
+### `konfigurieren: AiPromptInjectionInputGuardrail`
 
-Four variables control cost, coverage, and classification behaviour:
+Vier Variablen beeinflussen Kosten, Deckungsumfang und Klassifizierungsverhalten:
 
 ```yaml
-Variables:
+Variablen:
   AI:
     Guardrails:
       PromptInjection:
         Classifier:
-          # AI provider for the classifier. When blank, falls back to AI.DefaultProvider.
-          # Use a provider that offers cheap, fast models (e.g. OpenAI for gpt-4.1-nano).
+          # KI-Anbieter für den Klassifikator. Wenn leer, wird auf „AI.DefaultProvider“ zurückgegriffen.
+          # Verwenden Sie einen Anbieter, der kostengünstige, schnelle Modelle anbietet (z. B. OpenAI für gpt-4.1-nano).
           Provider: ""
-          # Pin a cheaper model for the classifier to reduce token cost.
-          # When blank, the provider's default model is used.
+          # Ein kostengünstigeres Modell für den Klassifikator festlegen, um die Token-Kosten zu senken.
+          # Wenn das Feld leer ist, wird das Standardmodell des Anbieters verwendet.
           Model: "gpt-4.1-nano"
-          # Custom system prompt for the YES/NO classifier.
-          # When blank, the built-in prompt is used (covers 8 attack categories and 5 safe categories).
-          # Must instruct the model to reply with only YES or NO.
+          # Benutzerdefinierte System-Eingabeaufforderung für den JA/NEIN-Klassifikator.
+          # Wenn das Feld leer ist, wird die integrierte Eingabeaufforderung verwendet (deckt 8 Angriffskategorien und 5 sichere Kategorien ab).
+          # Das Modell muss angewiesen werden, nur mit JA oder NEIN zu antworten.
           SystemPrompt: ""
-          # Allow messages shorter than this character count without an LLM call.
-          # Default is 0 (all messages are evaluated). Raise this to skip the LLM
-          # for very short messages once you understand your traffic patterns.
+          # Erlaubt Nachrichten, die kürzer als diese Zeichenanzahl sind, ohne einen LLM-Aufruf.
+          # Der Standardwert ist 0 (alle Nachrichten werden ausgewertet). Erhöhen Sie diesen Wert, um das LLM
+          # bei sehr kurzen Nachrichten zu überspringen, sobald Sie Ihre Verkehrsmuster verstanden haben.
           MinLength: "0"
 ```
 
-#### Customising the system prompt
+#### Anpassen der Systemaufforderung
 
-The built-in prompt covers generic prompt injection patterns. For domain-specific deployments you may need to extend it — for example, a financial chatbot that should also block attempts to invoke "advisor mode" with no compliance checks, or a support bot that should reject attempts to impersonate internal staff.
+Die integrierte Eingabeaufforderung deckt allgemeine Muster für Eingabeaufforderungs-Injektionen ab. Für domänenspezifische Einsatzszenarien müssen Sie sie möglicherweise erweitern – beispielsweise bei einem Finanz-Chatbot, der auch Versuche blockieren soll, den „Beratermodus“ ohne Compliance-Prüfungen aufzurufen, oder bei einem Support-Bot, der Versuche zurückweisen soll, sich als interne Mitarbeiter auszugeben.
 
-Set `SystemPrompt` to your own text. The prompt **must** end with an instruction to reply with only `YES` or `NO`:
+Setzen Sie „ `“ und „SystemPrompt` “ auf Ihren eigenen Text. Die Eingabeaufforderung „ **“ muss** mit der Anweisung enden, nur mit „ `YES` “ oder „ `NO` “ zu antworten:
 
 ```
-You are a prompt injection classifier for a financial services chatbot.
-[... your custom rules ...]
-Reply ONLY YES or NO.
+Du bist ein Klassifikator mit sofortiger Eingabe für einen Chatbot im Finanzdienstleistungsbereich.
+[... deine benutzerdefinierten Regeln ...]
+Antworte NUR mit JA oder NEIN.
 ```
 
-Leave the variable blank to use the built-in prompt.
+Lassen Sie das Feld leer, um die integrierte Eingabeaufforderung zu verwenden.
 
-> **Important:** The classifier must reply with `YES` or `NO`. If the model returns anything else (e.g. a sentence), the guardrail **blocks the message as a precaution** and logs a warning to alert you to the misconfiguration.
+> **Wichtig:** Der Klassifikator muss mit `„YES“` oder `„NO“` antworten. Wenn das Modell etwas anderes zurückgibt (z. B. einen Satz), blockiert die Schutzmaßnahme **die Nachricht vorsorglich** und protokolliert eine Warnung, um Sie auf die Fehlkonfiguration hinzuweisen.
 
-## Configuring Default Guardrails
+## Standard-Sicherheitsgrenzen konfigurieren
 
-Set default guardrails in `variables.yaml`. These apply to every agent that does **not** explicitly configure its own guardrail list:
+Legen Sie Standard-Guardrails in der Datei „variables.yaml“ unter `` fest. Diese gelten für jeden Agenten, der **nicht** seine eigene Guardrail-Liste explizit konfiguriert:
 
 ```yaml
-Variables:
+Variablen:
   AI:
     Guardrails:
-      # Comma-separated list of guardrail names
+      # Durch Kommas getrennte Liste von Guardrail-Namen
       DefaultInput: PromptInjectionInputGuardrail
       DefaultOutput: SensitiveDataOutputGuardrail
 ```
 
-## Using Guardrails in Agents
+## Verwendung von Guardrails in Agenten
 
-In the agent configuration, specify guardrails as a String array:
+Geben Sie in der Agentenkonfiguration die Guardrails als String-Array an:
 
 ```java
-// Input guardrails
+// Eingabe-Sicherheitsgrenzen
 ["PromptInjectionInputGuardrail", "MyCustomInputGuardrail"]
 
-// Output guardrails
+// Ausgabe-Sicherheitsgrenzen
 ["SensitiveDataOutputGuardrail", "MyCustomOutputGuardrail"]
 ```
 
-If no guardrails are specified, the agent uses the default guardrails from `variables.yaml`.
+Wenn keine Guardrails angegeben sind, verwendet der Agent die Standard-Guardrails aus der Datei „variables.yaml“ unter `` .
 
-## Implementing Custom Guardrails
+## Implementierung benutzerdefinierter Sicherheitsvorkehrungen
 
-### Custom Input Guardrail
+### Maßgefertigte Eingabeschutzleiste
 
-1. Create a class implementing `SmartWorkflowInputGuardrail`:
+1. Erstellen Sie eine Klasse, die „ `“ und „SmartWorkflowInputGuardrail“ implementiert:`:
 
 ```java
-package com.example.guardrails;
+Paket com.example.guardrails;
 
 import com.axonivy.utils.smart.workflow.guardrails.entity.GuardrailResult;
 import com.axonivy.utils.smart.workflow.guardrails.entity.SmartWorkflowInputGuardrail;
@@ -107,24 +107,24 @@ public class MyCustomInputGuardrail implements SmartWorkflowInputGuardrail {
   @Override
   public GuardrailResult evaluate(String message) {
     if (containsBadContent(message)) {
-      return GuardrailResult.block("Message contains bad content");
+      return GuardrailResult.block("Nachricht enthält unzulässigen Inhalt");
     }
     return GuardrailResult.allow();
   }
 
   private boolean containsBadContent(String message) {
-    // Your validation logic
+    // Ihre Validierungslogik
     return false;
   }
 }
 ```
 
-### Custom Output Guardrail
+### Maßgefertigte Leitplanke
 
-1. Create a class implementing `SmartWorkflowOutputGuardrail`:
+1. Erstellen Sie eine Klasse, die „ `“ und „SmartWorkflowOutputGuardrail“ implementiert:`:
 
 ```java
-package com.example.guardrails;
+Paket com.example.guardrails;
 
 import com.axonivy.utils.smart.workflow.guardrails.entity.GuardrailResult;
 import com.axonivy.utils.smart.workflow.guardrails.entity.SmartWorkflowOutputGuardrail;
@@ -134,26 +134,26 @@ public class MyCustomOutputGuardrail implements SmartWorkflowOutputGuardrail {
   @Override
   public GuardrailResult evaluate(String message) {
     if (containsSensitiveData(message)) {
-      return GuardrailResult.block("Response contains sensitive data");
+      return GuardrailResult.block("Antwort enthält sensible Daten");
     }
     return GuardrailResult.allow();
   }
 
   private boolean containsSensitiveData(String message) {
-    // Your validation logic
+    // Ihre Validierungslogik
     return false;
   }
 }
 ```
 
-### Register Guardrails via Provider
+### Leitplanken über den Anbieter registrieren
 
-2. Create a `GuardrailProvider` to provide your custom guardrails:
+2. Erstellen Sie einen „ `“ GuardrailProvider`, um Ihre benutzerdefinierten Leitplanken bereitzustellen:
 
-> **Important:** Your project must register a `GuardrailProvider` via SPI for Smart Workflow to discover and load your custom guardrails. Without a registered provider, your guardrails will not be available to agents.
+> **Wichtig:** Ihr Projekt muss einen „ `“ GuardrailProvider` über SPI registrieren, damit Smart Workflow Ihre benutzerdefinierten Guardrails erkennen und laden kann. Ohne einen registrierten Provider stehen Ihre Guardrails den Agenten nicht zur Verfügung.
 
 ```java
-package com.example.guardrails;
+Paket com.example.guardrails;
 
 import java.util.List;
 
@@ -175,55 +175,55 @@ public class MyGuardrailProvider implements GuardrailProvider {
 }
 ```
 
-3. Register the provider in `src/META-INF/services/com.axonivy.utils.smart.workflow.guardrails.provider.GuardrailProvider`:
+3. Registrieren Sie den Anbieter unter `src/META-INF/services/com.axonivy.utils.smart.workflow.guardrails.provider.GuardrailProvider`:
 
    ```text
    com.example.guardrails.MyGuardrailProvider
    ```
 
-   This SPI registration is **required** for Smart Workflow to discover and load your guardrails. The provider will be automatically loaded when agents request guardrails by name.
+   Diese SPI-Registrierung ist erforderlich ( **), damit Smart Workflow Ihre Guardrails erkennen und laden kann (** ). Der Anbieter wird automatisch geladen, wenn Agenten Guardrails anhand ihres Namens anfordern.
 
-## Guardrail Observability
+## Beobachtbarkeit von Guardrail
 
-Smart Workflow records guardrail executions for both governance audit and external telemetry.
+Smart Workflow protokolliert die Ausführung von Sicherheitsmaßnahmen sowohl für Governance-Prüfungen als auch für die externe Telemetrie.
 
-### Ivy History Recording
+### Aufzeichnung der Geschichte von Ivy
 
-When `AI.Observability.Ivy.Enabled` is set to `true`, every guardrail execution is recorded in the agent conversation history. Each record includes:
+Wenn „ `“ („AI.Observability.Ivy.Enabled“)` auf „ `“ („true“)` gesetzt ist, wird jede Guardrail-Ausführung im Konversationsverlauf des Agenten protokolliert. Jeder Datensatz enthält:
 
-- **guardrailName** - The guardrail class name
-- **type** - `INPUT` or `OUTPUT`
-- **result** - `SUCCESS`, `FAILURE`, or `FATAL`
-- **message** - The validated content (user query for input guardrails, AI response for output guardrails)
-- **failureMessage** - The reason when a guardrail blocks (null on success)
-- **durationMs** - Execution time in milliseconds
-- **executedAt** - Timestamp of execution
+- **guardrailName** – Der Name der Leitplankenklasse
+- **Geben Sie Folgendes ein:** - `EINGABE` oder `AUSGABE`
+- **Ergebnis** – `ERFOLG`, `FEHLER` oder `FATAL`
+- **Nachricht** – Der validierte Inhalt (Benutzerabfrage für Eingabevorgaben, KI-Antwort für Ausgabevorgaben)
+- **failureMessage** – Der Grund, warum eine Schutzbarriere blockiert (null bei Erfolg)
+- **durationMs** – Ausführungszeit in Millisekunden
+- **executedAt** – Zeitstempel der Ausführung
 
-Guardrail records are stored alongside tool executions in the `AgentConversationEntry` and are visible in the agent history tree.
+Guardrail-Datensätze werden zusammen mit den Tool-Ausführungen im „ `“ unter „AgentConversationEntry“` gespeichert und sind im Agentenverlaufsbaum einsehbar.
 
-### OpenInference Tracing (Arize Phoenix)
+### OpenInference-Tracing (Arize Phoenix)
 
-When `AI.Observability.Openinference.Enabled` is set to `true`, each guardrail execution produces a dedicated span with `openinference.span.kind = "GUARDRAIL"`. These spans appear in Arize Phoenix alongside the LLM spans, providing a complete trace of the AI interaction including safety checks.
+Wenn `AI.Observability.Openinference.Enabled` auf `true` gesetzt ist, erzeugt jede Guardrail-Ausführung einen eigenen Span mit `openinference.span.kind = "GUARDRAIL"`. Diese Spans werden in Arize Phoenix neben den LLM-Spans angezeigt und bieten so einen vollständigen Ablaufverlauf der KI-Interaktion einschließlich der Sicherheitsprüfungen.
 
-Guardrail span attributes:
+Eigenschaften der Leitplanken-Spannweite:
 
-| Attribute                   | Description                                       |
-| --------------------------- | ------------------------------------------------- |
-| `openinference.span.kind`   | `GUARDRAIL`                                       |
-| `validator_name`            | The guardrail class name (Phoenix convention)     |
-| `validator_on_fail`         | Behavior on failure — always `"exception"`        |
-| `guardrail.type`            | `INPUT` or `OUTPUT`                               |
-| `guardrail.result`          | `SUCCESS`, `FAILURE`, or `FATAL`                  |
-| `guardrail.failure_message` | Failure reason (present only when blocked)        |
-| `input.value`               | The validated content (user query or AI response) |
-| `output.value`              | `"pass"` or `"fail"` (Phoenix convention)         |
+| Attribut                   | Beschreibung                                                 |
+| -------------------------- | ------------------------------------------------------------ |
+| `openinference.span.kind`  | `LEITPLANKE`                                                 |
+| `validator_name`           | Der Name der Guardrail-Klasse (Phoenix-Konvention)           |
+| `validator_on_fail`        | Verhalten bei Fehlern — immer eine „ ` “ auslösen`           |
+| `Leitplankenart`           | `EINGABE` oder `AUSGABE`                                     |
+| `Leitplanke.Ergebnis`      | `ERFOLG`, `FEHLER` oder `FATAL`                              |
+| `Leitplanke.Fehlermeldung` | Fehlerursache (wird nur bei Sperrung angezeigt)              |
+| `input.value`              | Der validierte Inhalt (Benutzeranfrage oder KI-Antwort)      |
+| `output.value`             | `„bestanden“` oder ` „nicht bestanden“` (Phoenix-Konvention) |
 
-## Handling Guardrail Errors
+## Umgang mit Leitplankenfehlern
 
-When a guardrail blocks the input or output, an exception is thrown with the error code `smartworkflow:guardrail:input:violation` or `smartworkflow:guardrail:output:violation`. You can handle this using an Error Boundary Event:
+Wenn eine Guardrail die Eingabe oder Ausgabe blockiert, wird eine Ausnahme mit dem Fehlercode „ `“ ausgelöst: „smartworkflow:guardrail:input:violation“` oder „ `“ „smartworkflow:guardrail:output:violation“`. Sie können dies mithilfe eines „Error Boundary“-Ereignisses behandeln:
 
-1. Add an **Error Boundary Event** to your `AgenticProcessCall` element.
-2. Configure it to catch the error code: `smartworkflow:guardrail:input:violation` or `smartworkflow:guardrail:output:violation`.
-3. Implement your error handling logic (e.g., display a user-friendly message, log the incident, retry with different input).
+1. Fügen Sie Ihrem Element „ `“ („AgenticProcessCall“` ) ein „ **“-Fehlergrenzenereignis („** “) hinzu.
+2. Konfigurieren Sie es so, dass der Fehlercode erfasst wird: `smartworkflow:guardrail:input:violation` oder `smartworkflow:guardrail:output:violation`.
+3. Implementieren Sie Ihre Fehlerbehandlungslogik (z. B. Anzeige einer benutzerfreundlichen Meldung, Protokollierung des Vorfalls, erneuter Versuch mit anderen Eingabedaten).
 
-For a working example, see the `GuardrailDemo` process in the `smart-workflow-demo` project.
+Ein funktionierendes Beispiel finden Sie im Prozess „ `GuardrailDemo“ (` ) im Projekt „ `smart-workflow-demo“ (` ).
