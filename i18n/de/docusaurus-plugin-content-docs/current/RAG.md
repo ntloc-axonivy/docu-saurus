@@ -1,38 +1,24 @@
 # Smart Workflow RAG
 
-Retrieval-Augmented Generation (RAG) verbessert KI-Antworten im Axon Ivy Smart
-Workflow, indem sie auf Ihren eigenen Dokumenten und Wissensdatenbanken
-verankert werden. Anstatt sich ausschließlich auf die Trainingsdaten des LLMs zu
-verlassen, ruft RAG relevante Inhalte aus einem Vektorspeicher ab und bindet
-diese als Kontext ein – und liefert so Antworten, die präzise, überprüfbar und
-spezifisch für Ihr Unternehmen sind.
+Retrieval-Augmented Generation (RAG) verbessert KI-Antworten im Axon Ivy Smart Workflow, indem sie auf Ihren eigenen Dokumenten und Wissensdatenbanken verankert werden. Anstatt sich ausschließlich auf die Trainingsdaten des LLMs zu verlassen, ruft RAG relevante Inhalte aus einem Vektorspeicher ab und bindet diese als Kontext ein – und liefert so Antworten, die präzise, überprüfbar und spezifisch für Ihr Unternehmen sind.
 
 The workflow is straightforward:
 
-1. **Ingest** — Split your documents into chunks, generate embeddings, and store
-   them in a vector store.
-2. **Search** — When a question arrives, embed the query, find the most similar
-   chunks, and return them.
-3. **Answer** — The LLM receives the retrieved chunks as context and generates a
-   grounded response.
+1. **Ingest** — Split your documents into chunks, generate embeddings, and store them in a vector store.
+2. **Search** — When a question arrives, embed the query, find the most similar chunks, and return them.
+3. **Answer** — The LLM receives the retrieved chunks as context and generates a grounded response.
 
-Smart Workflow provides callable subprocesses and AI tools that handle steps 1
-and 2. Step 3 is handled by the `AgenticProcessCall` element, which orchestrates
-the LLM and tool calls automatically.
+Smart Workflow provides callable subprocesses and AI tools that handle steps 1 and 2. Step 3 is handled by the `AgenticProcessCall` element, which orchestrates the LLM and tool calls automatically.
 
 ## OpenSearch
 
-[OpenSearch](https://opensearch.org/) is a scalable, open-source search and
-analytics engine that supports k-NN vector search — making it a natural fit for
-RAG workloads.
+[OpenSearch](https://opensearch.org/) is a scalable, open-source search and analytics engine that supports k-NN vector search — making it a natural fit for RAG workloads.
 
-The `smart-workflow-opensearch-rag` module provides a callable subprocess for
-setup and an AI tool that an agent can invoke at runtime.
+The `smart-workflow-opensearch-rag` module provides a callable subprocess for setup and an AI tool that an agent can invoke at runtime.
 
 #### Callable: `createVectorStore`
 
-Use this callable subprocess to create an OpenSearch index and ingest documents
-before the agent runs.
+Use this callable subprocess to create an OpenSearch index and ingest documents before the agent runs.
 
 **Input parameters**
 
@@ -49,9 +35,7 @@ before the agent runs.
 
 #### Tool: `openSearchSearch`
 
-Semantic search tool available to Smart Workflow agents. The agent calls this
-tool automatically when it needs to look up relevant content from a knowledge
-base.
+Semantic search tool available to Smart Workflow agents. The agent calls this tool automatically when it needs to look up relevant content from a knowledge base.
 
 **Input parameters**
 
@@ -70,18 +54,12 @@ base.
 
 ### Demo
 
-The `RagChatBotDemo` process in `smart-workflow-demo` is an interactive
-four-step wizard that demonstrates a complete RAG pipeline:
+The `RagChatBotDemo` process in `smart-workflow-demo` is an interactive four-step wizard that demonstrates a complete RAG pipeline:
 
-1. **Configuration** — Review the OpenSearch server URL, authentication type,
-   and embedding model settings loaded from Ivy variables. Test the connection
-   before proceeding.
-2. **Upload & Embed** — Enter an index name, upload `.txt` or `.md` files, and
-   embed the documents into OpenSearch as searchable vector chunks.
-3. **Results** — Inspect all indexed chunks with their source file and a content
-   preview.
-4. **Chat** — Ask questions answered by an AI agent that retrieves grounded
-   context from the indexed documents using the `openSearchSearch` tool.
+1. **Configuration** — Review the OpenSearch server URL, authentication type, and embedding model settings loaded from Ivy variables. Test the connection before proceeding.
+2. **Upload & Embed** — Enter an index name, upload `.txt` or `.md` files, and embed the documents into OpenSearch as searchable vector chunks.
+3. **Results** — Inspect all indexed chunks with their source file and a content preview.
+4. **Chat** — Ask questions answered by an AI agent that retrieves grounded context from the indexed documents using the `openSearchSearch` tool.
 
 **Prerequisites:**
 
@@ -91,7 +69,4 @@ AI.RAG.OpenSearch.Url        = https://my-opensearch.us-east-1.es.amazonaws.com
 # AI.RAG.EmbeddingModel.Provider can be left blank if AI.DefaultProvider supports embedding
 ```
 
-> **Tip:** Our [Devcontainer](dev/DEVCONTAINER.md) is pre-configured with an
-> OpenSearch service, so you can skip the server setup and
-> `AI.RAG.OpenSearch.Url` configuration. In that environment you only need to
-> define the AI Provider API key.
+> **Tip:** Our [Devcontainer](dev/DEVCONTAINER.md) is pre-configured with an OpenSearch service, so you can skip the server setup and `AI.RAG.OpenSearch.Url` configuration. In that environment you only need to define the AI Provider API key.
