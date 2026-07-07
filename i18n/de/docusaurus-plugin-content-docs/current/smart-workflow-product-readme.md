@@ -1,400 +1,281 @@
-# Smart Workflow
+# Intelligenter Workflow
 
-**Smart Workflow** brings AI directly into Axon Ivy, so developers can build,
-run, and improve AI agents inside existing Axon processes. It lets business
-workflows leverage large language models to understand natural language, make
-autonomous decisions, and adapt to changing requirements — all without heavy
-architectural changes.
+**Die „Smart Workflow** “ integriert KI direkt in Axon Ivy, sodass Entwickler KI-Agenten innerhalb bestehender Axon-Prozesse erstellen, ausführen und optimieren können. Damit können Geschäftsabläufe große Sprachmodelle nutzen, um natürliche Sprache zu verstehen, autonome Entscheidungen zu treffen und sich an veränderte Anforderungen anzupassen – und das alles ohne umfangreiche architektonische Änderungen.
 
-Key benefits of Smart Workflow:
+Die wichtigsten Vorteile von Smart Workflow:
 
-- **Familiar setup:** Drop AI agents into BPMN processes with no structural
-  changes and configure everything through Axon Ivy’s standard interfaces.
-- **Enterprise-ready:** Built for enterprise needs with logging, monitoring, and
-  configuration controls.
-- **Flexible tools:** Turn any callable process into an AI-discoverable tool.
-- **Multi-model support:** Use lightweight or advanced models depending on the
-  task.
-- **Type-safe outputs:** Produce structured Java objects from AI responses for
-  immediate use.
-- **Natural language handling:** Accept unstructured input and return
-  human-friendly output.
+- **Bekanntes Setup:** Fügen Sie KI-Agenten ohne strukturelle Änderungen in BPMN-Prozesse ein und konfigurieren Sie alles über die Standardschnittstellen von Axon Ivy.
+- **Für den Einsatz in Unternehmen geeignet:** Speziell für die Anforderungen von Unternehmen entwickelt, mit Protokollierung, Überwachung und Konfigurationssteuerung.
+- **Flexible Tools:** Verwandeln Sie jeden aufrufbaren Prozess in ein für KI auffindbares Tool.
+- **Unterstützung verschiedener Modelle:** Verwenden Sie je nach Aufgabe einfache oder komplexe Modelle.
+- **Typsichere Ausgaben:** Erzeugt strukturierte Java-Objekte aus KI-Antworten zur sofortigen Verwendung.
+- **Verarbeitung natürlicher Sprache:** Unstrukturierte Eingaben akzeptieren und menschenlesbare Ausgaben zurückgeben.
 
-**Disclaimer**
+**Haftungsausschluss**
 
-The **user is solely responsible** for the configuration, deployment, and
-operation of the AI and its associated agents. Any decisions, actions, or
-outcomes resulting from the use of this connector are entirely the
-responsibility of the user.
+Der Benutzer von „ **“ ist allein verantwortlich** für die Konfiguration, Bereitstellung und den Betrieb der KI und der zugehörigen Agenten. Alle Entscheidungen, Maßnahmen oder Ergebnisse, die sich aus der Nutzung dieses Konnektors ergeben, liegen vollständig in der Verantwortung des Benutzers.
 
-We provide only the **technical capability** to enable such configurations and
-expressly disclaim any liability for misuse, misconfiguration, or unintended
-consequences arising from its use. By using this connector, you acknowledge and
-accept these limitations.
+Wir stellen lediglich die technische Funktion „ **“** zur Verfügung, um solche Konfigurationen zu ermöglichen, und schließen ausdrücklich jegliche Haftung für Missbrauch, Fehlkonfigurationen oder unbeabsichtigte Folgen, die sich aus der Nutzung ergeben, aus. Durch die Nutzung dieses Connectors erkennen Sie diese Einschränkungen an und akzeptieren sie.
 
 ## Demo
 
-### Axon Ivy Support Agent Demo
+### Axon Ivy Support Agent – Demo
 
-This demo showcases how to use the Axon Ivy Support Agent, an AI-powered agent
-integrated into a business workflow. The agent is designed to classify support
-problems, check for missing information, and create support tasks automatically.
+Diese Demo veranschaulicht die Verwendung des „Axon Ivy Support Agent“, eines KI-gestützten Agenten, der in einen Geschäftsworkflow integriert ist. Der Agent dient dazu, Supportprobleme zu klassifizieren, auf fehlende Informationen zu prüfen und automatisch Supportaufgaben anzulegen.
 
 <details>
 <summary><strong>Workflow Overview</strong></summary>
 
-1. **Input:** The agent receives a support question and the username of the
-   reporter.
-2. **Classification:** It analyzes the problem, determines if information is
-   missing (such as version), and classifies the issue (Portal, Core, or Market
-   product).
-3. **Task Creation:** If necessary, the agent creates a support task using the
-   `createAxonIvySupportTask` tool and provides a link to the created task.
-4. **Summary & Response:** The agent summarizes the problem and replies to the
-   user with a detailed response.
+1. **Eingabe:** Der Mitarbeiter erhält eine Support-Anfrage und den Benutzernamen des Anfragenden.
+2. **Klassifizierung:** Hier wird das Problem analysiert, festgestellt, ob Informationen fehlen (z. B. die Version), und das Problem klassifiziert (Portal, Core oder Market-Produkt).
+3. **Erstellung einer Support-Aufgabe:** Falls erforderlich, erstellt der Mitarbeiter mithilfe des Tools „ `“ unter „createAxonIvySupportTask“` eine Support-Aufgabe und stellt einen Link zu der erstellten Aufgabe bereit.
+4. **Zusammenfassung und Antwort:** Der Mitarbeiter fasst das Problem zusammen und gibt dem Nutzer eine ausführliche Antwort.
 
 </details>
 
 <details>
 <summary><strong>Technical Details</strong></summary>
 
-- The agent is implemented as a callable sub-process
-  (`AxonIvySupportAgent.p.json`) and uses the
-  `com.axonivy.utils.smart.workflow.AgenticProcessCall` Java bean.
-- The agent is configured to use a specific tool (`createAxonIvySupportTask`),
-  which allows it to create support tasks automatically within the workflow.
-  This is achieved by specifying the tool name in the agent's configuration (see
-  example below).
-- The agent's output is mapped to a structured Java object
-  (`AxonIvySupportResponse`), making it easy to use the AI-generated result
-  directly in Axon Ivy processes. This object typically contains details such as
-  the classification, created task link, and a summary of the support issue.
+- Der Agent ist als aufrufbarer Unterprozess implementiert (`AxonIvySupportAgent.p.json`) und nutzt das Java-Bean „ `com.axonivy.utils.smart.workflow.AgenticProcessCall“`.
+- Der Agent ist so konfiguriert, dass er ein bestimmtes Tool verwendet (`createAxonIvySupportTask`), mit dem er automatisch Support-Aufgaben innerhalb des Workflows erstellen kann. Dies wird erreicht, indem der Name des Tools in der Konfiguration des Agenten angegeben wird (siehe Beispiel unten).
+- Die Ausgabe des Agenten wird einem strukturierten Java-Objekt zugeordnet (`AxonIvySupportResponse`), wodurch sich das von der KI generierte Ergebnis problemlos direkt in Axon-Ivy-Prozessen verwenden lässt. Dieses Objekt enthält in der Regel Angaben wie die Klassifizierung, den erstellten Aufgabenlink und eine Zusammenfassung des Support-Falls.
 
 </details>
 
 <details>
 <summary><strong>Agent Configuration Example</strong></summary>
 
-To configure the agent, define a program element with the following settings:
+Um den Agenten zu konfigurieren, definieren Sie ein Programmelement mit den folgenden Einstellungen:
 
-![Support Ticket example](img/support-ticket-example.png)
+![Beispiel für ein Support-Ticket](img/support-ticket-example.png)
 
-This configuration ensures the agent uses only the specified tool and returns
-its output as a structured Java object.
+Diese Konfiguration stellt sicher, dass der Agent ausschließlich das angegebene Tool verwendet und dessen Ausgabe als strukturiertes Java-Objekt zurückgibt.
 
 </details>
 
 <details>
 <summary><strong>Demo Run Example</strong></summary>
 
-Suppose a user submits a support question: "I have NPE when open Case Details in
-Portal 12.0.9"
+Angenommen, ein Benutzer reicht folgende Supportanfrage ein: „Ich erhalte eine NPE-Fehlermeldung, wenn ich die Falldetails in Portal 12.0.9 öffne.“
 
-1. The agent receives the question and username.
-2. It checks for missing information (e.g., version), classifies the issue as a
-   Portal problem, and determines that a support task should be created.
-3. The agent calls the `createAxonIvySupportTask` tool, which creates a new
-   support task and returns a link to it.
-4. The agent summarizes the problem and provides a response such as:
+1. Der Mitarbeiter erhält die Frage und den Benutzernamen.
+2. Es prüft, ob Informationen fehlen (z. B. die Version), stuft das Problem als Portalproblem ein und stellt fest, dass eine Support-Aufgabe angelegt werden sollte.
+3. Der Agent ruft das Tool „createAxonIvySupportTask“ unter` der „ `“ auf, das eine neue Support-Aufgabe erstellt und einen Link dazu zurückgibt.
+4. Der Mitarbeiter fasst das Problem zusammen und gibt eine Antwort wie beispielsweise:
 
 ```text
-Classification: Portal
-Summary: The problem is a NullPointerException (NPE) occurring when opening Case Details in Portal version 12.0.9. Since the issue is related to the Portal product and the version is provided, a support task has been created to address this problem.
+Klassifizierung: Portal
+Zusammenfassung: Das Problem ist eine NullPointerException (NPE), die beim Öffnen der Falldetails in Portal Version 12.0.9 auftritt. Da das Problem mit dem Portal-Produkt zusammenhängt und die Version angegeben wurde, wurde ein Support-Ticket erstellt, um dieses Problem zu beheben.
 ```
 
-This response is mapped to the `AxonIvySupportResponse` object and can be used
-directly in subsequent workflow steps.
+Diese Antwort wird dem Objekt „AxonIvySupportResponse“ (` ) unter `zugeordnet und kann direkt in nachfolgenden Workflow-Schritten verwendet werden.
 
 </details>
 
 <details>
 <summary><strong>How to Run the Demo</strong></summary>
 
-1. Ensure you have completed the [Configurations](#configurations) section.
-2. Start **Axon Ivy Support** process with a support question and username.
-3. Review the agent's response, which includes classification, task creation (if
-   needed), and a summary.
+1. Stellen Sie sicher, dass Sie den Abschnitt [Konfigurationen](#configurations) ausgefüllt haben.
+2. Starten Sie den Prozess unter **Axon Ivy Support** mit einer Support-Anfrage und Ihrem Benutzernamen.
+3. Sehen Sie sich die Antwort des Bearbeiters an, die die Klassifizierung, die Erstellung einer Aufgabe (falls erforderlich) und eine Zusammenfassung enthält.
 
 </details>
 
 ---
 
-### Shopping Demo
+### Einkaufs-Demo
 
-This demo showcases how AI can transform the operations of a small e-commerce
-fashion store. It’s more advanced and combines two mini-demos: one on product
-creation and another on semantic search. Because of its complexity, we won’t
-dive into the detailed code or step-by-step instructions here. If you’d like to
-explore the implementation, please check out the demo project
-`smart-workflow-demo`.
+Diese Demo zeigt, wie KI die Abläufe eines kleinen E-Commerce-Modeshops verändern kann. Sie ist etwas fortgeschrittener und kombiniert zwei Mini-Demos: eine zur Produkterstellung und eine zur semantischen Suche. Aufgrund ihrer Komplexität werden wir hier nicht näher auf den Code oder eine Schritt-für-Schritt-Anleitung eingehen. Wenn Sie sich die Umsetzung genauer ansehen möchten, schauen Sie sich bitte das Demo-Projekt unter `smart-workflow-demo` an.
 
 <details>
 <summary><strong>Product creation</strong></summary>
 
-Traditionally, adding a product requires the store operator to manually fill
-many fields and to validate or create dependent records (supplier, brand,
-category). For a small store this process can take hours or a full day: manual
-data entry, hunting for missing info, and re-checking for mistakes.
+Bisher musste der Ladenbetreiber beim Hinzufügen eines Produkts viele Felder manuell ausfüllen und abhängige Datensätze (Lieferant, Marke, Kategorie) überprüfen oder anlegen. Für einen kleinen Laden kann dieser Vorgang Stunden oder sogar einen ganzen Tag in Anspruch nehmen: manuelle Dateneingabe, Suche nach fehlenden Informationen und erneute Überprüfung auf Fehler.
 
-With Smart Workflow agents, the operator simply imports the product
-specification and image files. The agents handle parsing, validation, dependency
-resolution, and product creation — significantly reducing manual work and
-time-to-publish.
+Mit den Smart-Workflow-Agenten importiert der Bediener lediglich die Produktspezifikation und die Bilddateien. Die Agenten übernehmen das Parsen, die Validierung, die Auflösung von Abhängigkeiten und die Produkterstellung – wodurch der manuelle Aufwand und die Zeit bis zur Veröffentlichung erheblich reduziert werden.
 
-Developers need to create four agents
+Entwickler müssen vier Agenten erstellen
 
-1. Product agent
+1. Produktvertreter
 
-- Input: parsed product specification
-- Tools:
-  - Find product: Find product in the system
-  - Create product: Create a new product using the provided specification
-  - Check product dependencies: Call other agents to find and validate
-    dependencies (supplier, brand, and category)
+- Eingabe: analysierte Produktspezifikation
+- Werkzeuge:
+  - Produkt suchen: Produkt im System suchen
+  - Produkt anlegen: Ein neues Produkt anhand der angegebenen Spezifikation anlegen
+  - Produktabhängigkeiten prüfen: Andere Mitarbeiter hinzuziehen, um Abhängigkeiten (Lieferant, Marke und Kategorie) zu ermitteln und zu überprüfen
 
-2. Supplier agent
+2. Lieferantenvertreter
 
-- Input: supplier information
-- Tools:
-  - Find supplier: Find supplier in the system
-  - Create supplier: Create a new supplier using the provided information
+- Eingabe: Lieferantenangaben
+- Werkzeuge:
+  - Lieferanten suchen: Lieferanten im System suchen
+  - Lieferanten anlegen: Legen Sie anhand der angegebenen Informationen einen neuen Lieferanten an
 
-3. Category agent
+3. Kategorie: Makler
 
-- Input: product category information
-- Tools:
-  - Find category: Find category in the system
-  - Create category: Create a new category using the provided information
+- Eingabe: Informationen zur Produktkategorie
+- Werkzeuge:
+  - Kategorie suchen: Kategorie im System suchen
+  - Kategorie erstellen: Erstellen Sie anhand der angegebenen Informationen eine neue Kategorie.
 
-4. Brand agent
+4. Markenvertreter
 
-- Input: product brand information
-- Tools:
-  - Find brand: Find brand in the system
-  - Create brand: Create a new brand using the provided information
+- Eingabe: Informationen zur Produktmarke
+- Werkzeuge:
+  - Marke suchen: Marke im System suchen
+  - Marke anlegen: Legen Sie anhand der bereitgestellten Informationen eine neue Marke an
 
-Demo flow (start **Create new product** process)
+Ablauf der Demo (Start- **, „Neues Produkt erstellen“** -Prozess)
 
-1. Operator uploads product specification and image files.
-2. Smart Workflow parses the files, extracts product attributes (title, SKU,
-   description, price, supplier info, brand, category, images).
-3. Validators check semantics and constraints (required fields, formats, SKU
-   uniqueness, image requirements).
-4. For each dependency (supplier, brand, category), Smart Workflow asks the
-   appropriate agent: if the entity exists → return the ID, if missing → create
-   it using the provided spec.
-5. Product agent creates the product with validated attributes and links to
-   dependency IDs.
-6. System returns a summary and optionally opens a human-review screen with
-   prefilled fields for final approval.
+1. Der Betreiber lädt Produktspezifikationen und Bilddateien hoch.
+2. Smart Workflow analysiert die Dateien und extrahiert Produktattribute (Titel, Artikelnummer, Beschreibung, Preis, Lieferantenangaben, Marke, Kategorie, Bilder).
+3. Validatoren überprüfen die Semantik und die Einschränkungen (Pflichtfelder, Formate, Eindeutigkeit der SKU, Bildanforderungen).
+4. Für jede Abhängigkeit (Lieferant, Marke, Kategorie) fragt Smart Workflow den zuständigen Mitarbeiter: Wenn die Entität existiert → die ID zurückgeben, wenn sie fehlt → sie anhand der bereitgestellten Spezifikation anlegen.
+5. Der Produktbeauftragte legt das Produkt mit validierten Attributen und Verknüpfungen zu Abhängigkeits-IDs an.
+6. Das System gibt eine Zusammenfassung aus und öffnet optional einen Bildschirm zur manuellen Überprüfung mit vorausgefüllten Feldern für die endgültige Freigabe.
 
-The new AI-powered process resulted in fewer errors, far less manual work, and a
-much faster time-to-publish.
+Der neue KI-gestützte Prozess führte zu weniger Fehlern, deutlich weniger manuellem Aufwand und einer wesentlich kürzeren Zeit bis zur Veröffentlichung.
 
 </details>
 
 <details>
 <summary><strong>Semantic search</strong></summary>
 
-Before AI, shoppers typed keyword queries like “red dress,” then manually
-applied filters (price, brand, category) and scanned the results. This process
-was not only slow and rigid but also often failed to capture synonyms, styles,
-or intent (e.g., party vs. work).
+Vor dem Zeitalter der KI gaben Käufer Suchbegriffe wie „rotes Kleid“ ein, wendeten dann manuell Filter (Preis, Marke, Kategorie) an und durchsuchten die Ergebnisse. Dieser Vorgang war nicht nur langsam und unflexibel, sondern erfasste oft auch keine Synonyme, Stile oder Absichten (z. B. „Party“ vs. „Arbeit“).
 
-With semantic search the user speaks or types a natural request. AI understands
-intent and constraints (color, price, occasion, urgency), converts that into a
-structured criteria object. The backend then converts that object into SQL
-predicates and returns matched results. Offers clear explanations, familiar
-tooling, and easier deployment.
+Bei der semantischen Suche gibt der Nutzer eine natürliche Anfrage per Sprache oder Tastatur ein. Die KI erkennt die Absicht und die Rahmenbedingungen (Farbe, Preis, Anlass, Dringlichkeit) und wandelt diese in ein strukturiertes Kriterienobjekt um. Das Backend wandelt dieses Objekt anschließend in SQL-Prädikate um und liefert passende Ergebnisse. Bietet klare Erklärungen, vertraute Tools und eine einfachere Implementierung.
 
-Developers need to add an additional `Find product by criteria` tool to the
-`Product agent` with input is the search criteria.
+Entwickler müssen dem Produkt-Agenten „ `“ (` ) ein zusätzliches Tool namens „ `“ („Produkt nach Kriterien suchen“;` ) hinzufügen, wobei die Suchkriterien als Eingabe dienen.
 
-Demo flow (start **Shopping Store** process)
+Ablauf der Demo (Start- **-Shopping-Store-** -Prozess)
 
-1. Shopper: types or says “I need a $100 red dress for a party tonight.”
-2. `Product agent` extracts attributes and expands the query (synonyms,
-   acceptable price range: $80–$120).
-3. Axon Ivy Business Data turns criteria into an optimized filters and search
-   for the products.
-4. Return the top products matched criteria.
+1. Kunde: tippt oder sagt: „Ich brauche ein rotes Kleid für 100 Dollar für eine Party heute Abend.“
+2. `Der Produktagent` extrahiert Attribute und erweitert die Suchanfrage (Synonyme, akzeptable Preisspanne: 80–120 Dollar).
+3. Axon Ivy Business Data wandelt Kriterien in optimierte Filter und Suchfunktionen für die Produkte um.
+4. Gib die besten Produkte zurück, die den Kriterien entsprechen.
 
-To quickly set up the demo data, start **Create data for shopping demo** from
-the process list.
+Um die Demodaten schnell einzurichten, starten Sie „ **“ und wählen Sie aus der Prozessliste „Daten für Shopping-Demo erstellen“ (** ) aus.
 
 </details>
 
 ---
 
-### File Extraction Demo
+### Demo zur Dateiextraktion
 
-This demo shows how to build a process that reads invoice data directly from
-uploaded images and PDF files — with no manual data entry. Using multimodal
-language models, the AI reads the document content and returns structured Java
-objects that subsequent process steps can use immediately.
+Diese Demo zeigt, wie man einen Prozess erstellt, der Rechnungsdaten direkt aus hochgeladenen Bildern und PDF-Dateien ausliest – ganz ohne manuelle Dateneingabe. Mithilfe multimodaler Sprachmodelle liest die KI den Dokumentinhalt aus und gibt strukturierte Java-Objekte zurück, die in den nachfolgenden Prozessschritten sofort verwendet werden können.
 
-To extract from a file, include the file content in the agent's user message.
-The AI reads it and maps the result to the specified Java class — no special
-tooling or file-system access required.
+Um Daten aus einer Datei zu extrahieren, fügen Sie den Dateiinhalt in die Benutzermeldung des Agenten ein. Die KI liest diesen Inhalt und ordnet das Ergebnis der angegebenen Java-Klasse zu – es sind weder spezielle Tools noch Zugriff auf das Dateisystem erforderlich.
 
 <details>
 <summary><strong>Demo flow</strong></summary>
 
-- Start **File Extraction Demo (CMS)** or **File Extraction Demo (Binary)** from
-  the process list.
+- Starten Sie die Demo zur Dateiextraktion „ **“ (CMS) unter** oder die Demo zur Dateiextraktion „ **“ (Binär) unter** aus der Prozessliste.
 
-  1. The process loads an invoice image and a PDF.
-  2. The file contents are included in the agent's user message.
-  3. The AI reads and extracts the invoice fields.
-  4. The result is returned as a typed Java object ready for the next process
-     step.
+  1. Der Prozess lädt ein Rechnungsbild und eine PDF-Datei.
+  2. Der Inhalt der Datei ist in der Benutzernachricht des Agenten enthalten.
+  3. Die KI liest die Rechnungsfelder aus und extrahiert sie.
+  4. Das Ergebnis wird als typisiertes Java-Objekt zurückgegeben, das für den nächsten Prozessschritt bereitsteht.
 
 </details>
 
-Not all providers support multimodal input — see the [Models Contribution
-Guideline](../doc/MODELS.md#file-extraction-support) for supported providers and
-file types.
+Nicht alle Anbieter unterstützen multimodale Eingaben – eine Übersicht über die unterstützten Anbieter und Dateiformate finden Sie in den [Richtlinien für Modellbeiträge](../doc/MODELS.md#file-extraction-support).
 
 ---
 
-### Guardrail Demo
+### Leitplanken-Demonstration
 
-This demo shows how built-in Smart Workflow guardrails protect AI agents from
-prompt injection attacks and prevent sensitive data from leaking in AI
-responses. Without protection, a malicious user can craft a message that
-overrides the system prompt or tricks the agent into revealing internal data.
+Diese Demo zeigt, wie integrierte Smart-Workflow-Sicherheitsvorkehrungen KI-Agenten vor Prompt-Injection-Angriffen schützen und verhindern, dass sensible Daten in KI-Antworten preisgegeben werden. Ohne diesen Schutz könnte ein böswilliger Nutzer eine Nachricht verfassen, die die Systemaufforderung überschreibt oder den Agenten dazu verleitet, interne Daten preiszugeben.
 
-Two defense layers are configured in the agent's `inputGuardrails` /
-`outputGuardrails` fields:
+In den Feldern „ `“, „inputGuardrails“` / `und „outputGuardrails“` des Agenten sind zwei Schutzebenen konfiguriert:
 
-- `PromptInjectionInputGuardrail` — inspects user input before it reaches the AI
-  model and blocks known injection patterns
-- `SensitiveDataOutputGuardrail` — scans the AI response before it is returned
-  and blocks output containing API keys or private keys
+- `PromptInjectionInputGuardrail` — überprüft Benutzereingaben, bevor sie das KI-Modell erreichen, und blockiert bekannte Injektionsmuster
+- `SensitiveDataOutputGuardrail` — überprüft die KI-Antwort, bevor sie zurückgegeben wird, und blockiert Ausgaben, die API-Schlüssel oder private Schlüssel enthalten
 
-Default guardrails can be set globally in `variables.yaml` under
-`AI.Guardrails.DefaultInput` and `AI.Guardrails.DefaultOutput` — any agent
-without explicit guardrails inherits these defaults.
+Standard-Guardrails können global in der Datei „variables.yaml“ unter `` unter `AI.Guardrails.DefaultInput` und `AI.Guardrails.DefaultOutput` festgelegt werden – jeder Agent ohne explizite Guardrails übernimmt diese Standardwerte.
 
 <details>
 <summary><strong>Demo flow</strong></summary>
 
-- **Prompt injection** (start **Prompt Injection Guardrail Demo** process)
+- **Demo zur Prompt-Injection-** (Start: **Prompt-Injection-Guardrail-Demo:** process)
 
-  1. A crafted malicious message is submitted. The
-     `PromptInjectionInputGuardrail` intercepts it before the AI is called and
-     raises an error.
-  2. The process catches the error via an `ErrorBoundaryEvent` and routes to a
-     safe fallback path.
+  1. Eine gezielt gestaltete bösartige Nachricht wird übermittelt. Der „ `“ PromptInjectionInputGuardrail` fängt diese ab, bevor die KI aufgerufen wird, und löst einen Fehler aus.
+  2. Der Prozess erfasst den Fehler über ein „ `“-ErrorBoundaryEvent` und leitet ihn an einen sicheren Fallback-Pfad weiter.
 
-- **Sensitive data output** (start **Sensitive Data Output Guardrail Demo**
-  process)
+- **** für die Ausgabe sensibler Daten (Start- -Demo zum Schutzmechanismus für die Ausgabe sensibler Daten process) ****
 
-  1. A message instructs the agent to include sensitive data in its response.
-     The `SensitiveDataOutputGuardrail` intercepts the response after the model
-     returns and blocks it.
-  2. The error boundary catches this violation and routes to the safe fallback
-     path again.
+  1. Eine Nachricht weist den Agenten an, sensible Daten in seine Antwort aufzunehmen. Der „ `“ „SensitiveDataOutputGuardrail“` fängt die Antwort ab, nachdem das Modell sie zurückgegeben hat, und blockiert sie.
+  2. Die Fehlergrenze erkennt diesen Verstoß und leitet den Ablauf wieder auf den sicheren Ausweichpfad um.
 
 </details>
 
 ---
 
-### Custom Guardrail Demo
+### Demo zu maßgefertigten Leitplanken
 
-This demo shows how to implement and register a domain-specific business rule as
-a reusable custom guardrail. A company policy requires that agents never mention
-competitor products. The `BlockCompetitorMentionGuardrail` enforces this rule in
-one place — once registered, it can be added to any agent by name without
-touching individual system prompts.
+Diese Demo zeigt, wie eine domänenspezifische Geschäftsregel als wiederverwendbares benutzerdefiniertes Guardrail implementiert und registriert wird. Eine Unternehmensrichtlinie schreibt vor, dass Agenten niemals Produkte von Wettbewerbern erwähnen dürfen. Das Guardrail „ `“ (BlockCompetitorMentionGuardrail,` ) setzt diese Regel an einer zentralen Stelle durch – sobald es registriert ist, kann es jedem Agenten namentlich zugewiesen werden, ohne dass einzelne Systemaufforderungen geändert werden müssen.
 
-Developers implement `SmartWorkflowInputGuardrail`, expose it through a
-`GuardrailProvider`, and register the provider in
-`META-INF/services/com.axonivy.utils.smart.workflow.guardrails.provider.GuardrailProvider`.
-The guardrail name then appears automatically in the Available Input Guardrails
-list. Each agent opts in via `inputGuardrails:
-["BlockCompetitorMentionGuardrail"]`; to apply it to every agent, add it to
-`AI.Guardrails.DefaultInput` in `variables.yaml`.
+Entwickler implementieren „ `“ (SmartWorkflowInputGuardrail)`, stellen es über einen „ `“ (GuardrailProvider)` bereit und registrieren den Provider unter `META-INF/services/com.axonivy.utils.smart.workflow.guardrails.provider.GuardrailProvider`. Der Name des Guardrails erscheint dann automatisch in der Liste „Verfügbare Eingabe-Guardrails“. Jeder Agent aktiviert die Funktion über `inputGuardrails: ["BlockCompetitorMentionGuardrail"]`; um sie auf alle Agenten anzuwenden, fügen Sie sie unter `AI.Guardrails.DefaultInput` in der Datei `variables.yaml` hinzu.
 
 <details>
 <summary><strong>Demo flow</strong></summary>
 
-- **Blocked query** (start **Custom Guardrail Demo - Blocked** process)
+- **Blockierte Abfrage** (Start- **-Demo zu „Custom Guardrail“ – Blockierter Prozess** )
 
-  1. A user submits a query that mentions a competitor product.
-  2. `BlockCompetitorMentionGuardrail` detects the mention and blocks the
-     request before the AI model is called.
-  3. The process catches the error and routes to a safe fallback path.
+  1. Ein Nutzer gibt eine Suchanfrage ein, in der ein Produkt eines Mitbewerbers erwähnt wird.
+  2. `BlockCompetitorMentionGuardrail` erkennt die Erwähnung und blockiert die Anfrage, bevor das KI-Modell aufgerufen wird.
+  3. Der Prozess erkennt den Fehler und leitet den Ablauf auf einen sicheren Ausweichpfad um.
 
-- **Allowed query** (start **Custom Guardrail Demo - Allowed** process)
+- **Zulässige Abfrage** (Start- **-Demo zu „Custom Guardrail“ – Zulässiger** -Prozess)
 
-  1. A user submits a query with no competitor mentions.
-  2. `BlockCompetitorMentionGuardrail` finds nothing to block and allows the
-     request through.
-  3. The agent processes the query and responds normally.
+  1. Ein Nutzer gibt eine Suchanfrage ein, in der keine Wettbewerber erwähnt werden.
+  2. `BlockCompetitorMentionGuardrail` findet nichts, was blockiert werden müsste, und lässt die Anfrage durch.
+  3. Der Agent bearbeitet die Anfrage und antwortet wie gewohnt.
 
 </details>
 
 ---
 
-## Best Practices
+## Bewährte Verfahren
 
-The demos below illustrate **best practices** for structuring Axon Ivy agents
-and tools with Smart Workflow. Three complementary patterns are shown: one for
-tightly scoping an agent's tool access, one for linear task-based orchestration,
-and one for feature-grouped tool reuse.
+Die folgenden Demos veranschaulichen die Best Practices von „ **“ (** ) zur Strukturierung von Axon Ivy-Agenten und -Tools mit Smart Workflow. Es werden drei sich ergänzende Muster gezeigt: eines zur strengen Begrenzung des Tool-Zugriffs eines Agenten, eines zur linearen, aufgabenbasierten Orchestrierung und eines zur Wiederverwendung von Tools in Funktionsgruppen.
 
-### Agent Pipeline
+### Agenten-Pipeline
 
-A linear chain of agents where each one processes an input and passes the result
-to the next stage. Best practice: assign a dedicated task to each agent so that
-execution is tracked, resumable, and visible in the task history.
+Eine lineare Kette von Agenten, in der jeder einzelne eine Eingabe verarbeitet und das Ergebnis an die nächste Stufe weiterleitet. Bewährte Vorgehensweise: Weisen Sie jedem Agenten eine eigene Aufgabe zu, damit die Ausführung nachverfolgt werden kann, fortgesetzt werden kann und im Aufgabenverlauf sichtbar ist.
 
-See the **Agent Pipeline Demo** process in `smart-workflow-demo`.
+Sehen Sie sich die Demo zur „ **-Agent-Pipeline“ unter** sowie den Prozess unter `smart-workflow-demo` an.
 
-### Self-Contained Agent with Co-located Tools
+### Eigenständiger Agent mit integrierten Tools
 
-The agent and its tools are self-contained in one file with no cross-process
-references, making the full capability easy to ship and expose as a single
-callable interface.
+Der Agent und seine Tools sind in einer einzigen Datei enthalten, die keine prozessübergreifenden Verweise enthält, sodass die gesamte Funktionalität problemlos als eine einzige aufrufbare Schnittstelle bereitgestellt und zugänglich gemacht werden kann.
 
-See the **Self-Contained Agent** process in `smart-workflow-demo`.
+Siehe den Prozess „ **: Self-Contained Agent“ (** ) unter `smart-workflow-demo`.
 
-### Feature-Grouped Agents and Tools
+### Nach Funktionen gruppierte Agenten und Tools
 
-This pattern shows how to organize agents and tools by business domain when
-tools need to be shared across multiple agents. Rather than bundling everything
-inside a single callable, each agent and each tool group lives in its own
-process file under a common feature folder — making the domain boundary explicit
-and allowing tool reuse.
+Dieses Muster zeigt, wie Agenten und Tools nach Geschäftsbereichen organisiert werden können, wenn Tools von mehreren Agenten gemeinsam genutzt werden sollen. Anstatt alles in einem einzigen aufrufbaren Objekt zu bündeln, befinden sich jeder Agent und jede Tool-Gruppe in einer eigenen Prozessdatei unter einem gemeinsamen Feature-Ordner – wodurch die Bereichsgrenzen deutlich gemacht werden und die Wiederverwendung von Tools ermöglicht wird.
 
-See the **Shopping Demo** process in `smart-workflow-demo`.
+Sehen Sie sich die „ **“-Shopping-Demo unter** sowie den Prozess unter `smart-workflow-demo` an.
 
-## Setup
+## Einrichtung
 
-To start your AI initiative, we need to define the Models and Tools in advance.
+Um Ihre KI-Initiative auf den Weg zu bringen, müssen wir die Modelle und Tools im Vorfeld festlegen.
 
-### Models
+### Modelle
 
-Smart Workflow isn't bound to a specific AI vendor. You can select your
-preferred model providers at installation time.
+Smart Workflow ist nicht an einen bestimmten KI-Anbieter gebunden. Sie können bei der Installation Ihre bevorzugten Modellanbieter auswählen.
 
-After installation, please choose your default model provider
+Bitte wählen Sie nach der Installation Ihren Standard-Modellanbieter aus.
 
-The selection of your provider is done with the variable `AI.DefaultProvider`.
-Furthermore, most model providers need an ApiKey or another unique identifier.
-Check your provider below, to see which variables need to be set in addition.
+Die Auswahl Ihres Anbieters erfolgt über die Variable „ `“ AI.DefaultProvider`. Darüber hinaus benötigen die meisten Modellanbieter einen API-Schlüssel oder eine andere eindeutige Kennung. Überprüfen Sie unten Ihren Anbieter, um zu sehen, welche Variablen zusätzlich gesetzt werden müssen.
 
-To request support for additional AI model providers, please open an issue or
-submit a pull request on GitHub. When contributing, make sure to follow the
-[Models Contribution Guideline](../doc/MODELS.md) to keep your provider aligned
-with the Smart Workflow ecosystem.
+Um Unterstützung für weitere Anbieter von KI-Modellen anzufordern, eröffnen Sie bitte ein Issue oder reichen Sie einen Pull Request auf GitHub ein. Beachten Sie bei Ihren Beiträgen unbedingt die [Richtlinien für Modellbeiträge](../doc/MODELS.md), damit Ihr Anbieter mit dem Smart-Workflow-Ökosystem kompatibel bleibt.
 
 ```yaml
 @variables.yaml@
 ```
 
-#### OpenAI Models
+#### OpenAI-Modelle
 
 <details>
 
@@ -406,29 +287,27 @@ OpenAI models are natively supported. If you wish to use them import the `smart-
 ```
 </details>
 
-#### Azure OpenAI Models
+#### Azure OpenAI-Modelle
 
 <details>
 
 <summary>Azure OpenAI setup instructions</summary>
 Azure OpenAI models are supported. To use Azure OpenAI, import the `smart-workflow-azure-openai` project and configure your Azure OpenAI endpoint and deployments.
 
-Each deployment in Azure OpenAI represents a model instance with its own API
-key. You can configure multiple deployments to use different models for
-different tasks.
+Jede Bereitstellung in Azure OpenAI entspricht einer Modellinstanz mit einem eigenen API-Schlüssel. Sie können mehrere Bereitstellungen so konfigurieren, dass für verschiedene Aufgaben unterschiedliche Modelle verwendet werden.
 
 ```yaml
 @variables.azureopenai@
 ```
 
-Example Configuration:
+Beispielkonfiguration:
 
 ```yaml
 @variables.azureopenai.example@
 ```
 </details>
 
-#### Google Gemini Models
+#### Google Gemini-Modelle
 
 <details>
 
@@ -440,14 +319,14 @@ This provider does not support the structured output feature because Google Gemi
 @variables.gemini@
 ```
 
-Example Configuration:
+Beispielkonfiguration:
 
 ```yaml
 @variables.gemini.example@
 ```
 </details>
 
-#### x.AI Models
+#### x.AI-Modelle
 
 <details>
 
@@ -458,7 +337,7 @@ x.AI models are supported, import the `smart-workflow-xai` to work with these.
 @variables.xai@
 ```
 
-Example Configuration:
+Beispielkonfiguration:
 
 ```yaml
 @variables.xai.example@
@@ -466,22 +345,20 @@ Example Configuration:
 
 </details>
 
-#### Anthropic Models
+#### Anthropische Modelle
 
 <details>
 
 <summary>Anthropic setup instructions</summary>
 Claude models (including Claude Opus, Sonnet and Haiku) from Anthropic are supported. Import the `smart-workflow-anthropic` project, configure your API key to get started.
 
-> **Note:** Structured outputs are only supported on Claude Opus 4.6, Claude
-> Sonnet 4.6, Claude Sonnet 4.5, Claude Opus 4.5, and Claude Haiku 4.5. Older
-> models (e.g., Claude Sonnet 4, Claude Opus 4) do not support this feature.
+> **Hinweis:** Strukturierte Ausgaben werden nur von Claude Opus 4.6, Claude Sonnet 4.6, Claude Sonnet 4.5, Claude Opus 4.5 und Claude Haiku 4.5 unterstützt. Ältere Modelle (z. B. Claude Sonnet 4, Claude Opus 4) unterstützen diese Funktion nicht.
 
 ```yaml
 @variables.anthropic@
 ```
 
-Example Configuration:
+Beispielkonfiguration:
 
 ```yaml
 @variables.anthropic.example@
@@ -489,30 +366,24 @@ Example Configuration:
 
 </details>
 
-#### Ollama Models
+#### Ollama-Modelle
 
 <details>
 
 <summary>Ollama setup instructions</summary>
 Ollama lets you run open-source models (Llama, Gemma, Qwen, Mistral, ...) locally or on your own infrastructure. Import the `smart-workflow-ollama` project, install [Ollama](https://ollama.com/), and pull the model you want to use (e.g. `ollama pull llama3.2`).
 
-Configure the `BaseUrl` of your Ollama server (defaults to
-`http://localhost:11434`) and the `DefaultModel`. No API key is required.
+Konfigurieren Sie die BaseUrl `` Ihres Ollama-Servers (Standardwert: `http://localhost:11434`) und das DefaultModel `` . Es ist kein API-Schlüssel erforderlich.
 
-> **Note:** Structured output support depends on the underlying model. Recent
-> models (Llama 3.1+, Gemma 3, Qwen 3, Mistral Nemo, ...) can return
-> JSON-schema-constrained responses on Ollama 0.3.0+. Older or smaller models
-> may return free-form text and break structured extraction.
+> **Hinweis:** Die Unterstützung für strukturierte Ausgaben hängt vom zugrunde liegenden Modell ab. Neuere Modelle (Llama 3.1+, Gemma 3, Qwen 3, Mistral Nemo, …) können auf Ollama 0.3.0+ Antworten zurückgeben, die den Einschränkungen des JSON-Schemas entsprechen. Ältere oder kleinere Modelle geben möglicherweise Text in freier Form zurück, wodurch die strukturierte Extraktion nicht mehr funktioniert.
 
-> **Note on embeddings:** Pull a dedicated embedding model such as
-> `nomic-embed-text` or `mxbai-embed-large` and set it as
-> `DefaultEmbeddingModel` to use the RAG features with Ollama.
+> **Hinweis zu Embeddings:** Laden Sie ein spezielles Embedding-Modell herunter, z. B. `nomic-embed-text,` oder `mxbai-embed-large,`, und legen Sie es als `DefaultEmbeddingModel fest,`, um die RAG-Funktionen mit Ollama zu nutzen.
 
 ```yaml
 @variables.ollama@
 ```
 
-Example Configuration:
+Beispielkonfiguration:
 
 ```yaml
 @variables.ollama.example@
@@ -520,119 +391,86 @@ Example Configuration:
 
 </details>
 
-### File Extraction
+### Dateiextraktion
 
-Axon Ivy Smart Workflow supports extracting content from PDF and image files
-(PNG, JPG, and JPEG) using multimodal LLMs. This allows AI agents to read and
-reason over uploaded documents and images directly within your workflows.
+Axon Ivy Smart Workflow unterstützt die Extraktion von Inhalten aus PDF- und Bilddateien (PNG, JPG und JPEG) mithilfe multimodaler LLMs. Dadurch können KI-Agenten hochgeladene Dokumente und Bilder direkt in Ihren Workflows lesen und auswerten.
 
-Not all providers and models support multimodal input. Refer to the [Models
-Contribution Guideline](../doc/MODELS.md#file-extraction-support) for the full
-list of supported providers and file types.
+Nicht alle Anbieter und Modelle unterstützen multimodale Eingaben. Eine vollständige Liste der unterstützten Anbieter und Dateiformate finden Sie in den [Richtlinien für Modellbeiträge](../doc/MODELS.md#file-extraction-support).
 
-### Guardrails
+### Leitplanken
 
-Guardrails protect AI agents by validating user input before it reaches the
-model and by checking model outputs before they are used. Smart Workflow
-includes the following built-in guardrails:
+Sicherheitsvorkehrungen schützen KI-Agenten, indem sie Benutzereingaben validieren, bevor diese das Modell erreichen, und die Modellausgaben überprüfen, bevor sie verwendet werden. Smart Workflow umfasst die folgenden integrierten Sicherheitsvorkehrungen:
 
-| Guardrail                       | Type   | Description                                          |
-| ------------------------------- | ------ | ---------------------------------------------------- |
-| `PromptInjectionInputGuardrail` | Input  | Blocks common prompt injection attacks               |
-| `SensitiveDataOutputGuardrail`  | Output | Blocks responses containing API keys or private keys |
+| Leitplanke                                       | Typ     | Beschreibung                                                            |
+| ------------------------------------------------ | ------- | ----------------------------------------------------------------------- |
+| `PromptInjectionInputGuardrail`                  | Eingabe | Verhindert gängige Angriffe durch das Einschleusen von Befehlen         |
+| `Schutzmaßnahme für die Ausgabe sensibler Daten` | Ausgabe | Blockiert Antworten, die API-Schlüssel oder private Schlüssel enthalten |
 
-#### Configuring Default Guardrails
+#### Standard-Sicherheitsgrenzen konfigurieren
 
-Set default guardrails in `variables.yaml`:
+Legen Sie Standard-Guardrails in der Datei „variables.yaml“ unter „ `“ fest:`:
 
 ```yaml
-Variables:
+Variablen:
   AI:
     Guardrails:
-      # Comma-separated list of guardrail names
+      # Durch Kommas getrennte Liste von Guardrail-Namen
       DefaultInput: PromptInjectionInputGuardrail
       DefaultOutput: SensitiveDataOutputGuardrail
 ```
 
-#### Using Guardrails in Agents
+#### Verwendung von Guardrails in Agenten
 
-In the agent configuration, specify guardrails as a String array:
+Geben Sie in der Agentenkonfiguration die Guardrails als String-Array an:
 
 ```java
-// Input guardrails
+// Eingabe-Sicherheitsgrenzen
 ["PromptInjectionInputGuardrail", "MyCustomInputGuardrail"]
 
-// Output guardrails
+// Ausgabe-Sicherheitsgrenzen
 ["SensitiveDataOutputGuardrail", "MyCustomOutputGuardrail"]
 ```
 
-If no guardrails are specified, the agent uses the default guardrails from
-`variables.yaml`.
+Wenn keine Guardrails angegeben sind, verwendet der Agent die Standard-Guardrails aus der Datei „variables.yaml“ unter `` .
 
-Smart Workflow also lets you implement custom guardrails and handle guardrail
-errors. For more details, see the [Guardrails Guideline](../doc/GUARDRAILS.md).
+Mit Smart Workflow können Sie außerdem benutzerdefinierte Sicherheitsvorkehrungen implementieren und Fehler im Zusammenhang mit diesen Sicherheitsvorkehrungen behandeln. Weitere Informationen finden Sie in den [Richtlinien zu Sicherheitsvorkehrungen](../doc/GUARDRAILS.md).
 
-### Defining Tools
+### Werkzeuge definieren
 
-To function effectively, AI agents require tools to perform tasks. Smart
-Workflow supports two kinds of tools: **Callable Process Tools** (any tagged
-callable sub-process) and **Java Tools** (implement `SmartWorkflowTool` and
-register via SPI).
+Um effektiv arbeiten zu können, benötigen KI-Agenten Werkzeuge zur Ausführung von Aufgaben. Smart Workflow unterstützt zwei Arten von Werkzeugen: **Aufrufbare Prozess-Werkzeuge** (jeder mit einem Tag versehene aufrufbare Teilprozess) und **Java-Werkzeuge** (Implementierung von `SmartWorkflowTool` und Registrierung über SPI).
 
-For step-by-step instructions on creating both tool types, see the [Tools
-Guide](../doc/TOOLS.md).
+Eine Schritt-für-Schritt-Anleitung zur Erstellung beider Tool-Typen finden Sie im [Tools-Leitfaden](../doc/TOOLS.md).
 
-### Defining AI agent
+### Definition eines KI-Agenten
 
-To define an AI agent, create a program element backed by the
-`com.axonivy.utils.smart.workflow.AgenticProcessCall` Java bean. In the
-`Configuration` tab, you can access and customize detailed settings for your AI
-agent.
+Um einen KI-Agenten zu definieren, erstellen Sie ein Programmelement, das auf dem Java-Bean „ `com.axonivy.utils.smart.workflow.AgenticProcessCall` “ basiert. Auf der Registerkarte „ `“ unter „Configuration“` können Sie auf detaillierte Einstellungen für Ihren KI-Agenten zugreifen und diese anpassen.
 
-#### Message
+#### Nachricht
 
-In the `Message` section, you can specify the user message and system message
-for the agent. By allowing code injection directly into these fields, Smart
-Workflow offers a convenient way for developers to define messages before they
-are sent to the AI service.
+Im Abschnitt „ `-Meldung“ (` ) können Sie die Benutzer- und Systemmeldung für den Agenten festlegen. Da Smart Workflow die direkte Einfügung von Code in diese Felder ermöglicht, bietet es Entwicklern eine bequeme Möglichkeit, Meldungen zu definieren, bevor diese an den KI-Dienst gesendet werden.
 
-![Message configurations](img/agent-message-configurations.png)
+![Nachrichtenkonfigurationen](img/agent-message-configurations.png)
 
-#### Tools
+#### Werkzeuge
 
-Below the `Messages` section is the `Tools` section, where you can define the
-set of tools the agent should use as a String array. For example:
+Unterhalb des Abschnitts „ `-Meldungen“ (` ) befindet sich der Abschnitt „ `-Tools“ (` ), in dem Sie die vom Agenten zu verwendenden Tools als String-Array definieren können. Beispiel:
 
 ```java
-["findProduct","createProduct","checkProductDependencies", "createProductSearchCriteria"]
+["Produkt suchen", "Produkt anlegen", "Produktabhängigkeiten prüfen", "Suchkriterien für Produkt anlegen"]
 ```
 
-By default, if no tools are specified, Smart Workflow assumes the agent can use
-all available tools. Therefore, it is recommended to define a specific set of
-tools for each agent to improve response speed and prevent the use of
-inappropriate tools.
+Wenn standardmäßig keine Tools angegeben werden, geht Smart Workflow davon aus, dass der Agent alle verfügbaren Tools nutzen kann. Daher wird empfohlen, für jeden Agenten einen bestimmten Satz an Tools festzulegen, um die Reaktionsgeschwindigkeit zu verbessern und die Verwendung ungeeigneter Tools zu verhindern.
 
-#### Model
+#### Modell
 
-Not all AI agents are created equal. In Axon Ivy, we recognize that AI agents
-handle tasks of varying complexity. Some agents perform simple tasks, such as
-creating leave requests or gathering user information, while others must search
-databases for products and evaluate dependencies like suppliers and brands.
-Therefore, Smart Workflow allows developers to select the underlying AI model
-based on the use case.
+Nicht alle KI-Agenten sind gleich. Bei Axon Ivy sind wir uns bewusst, dass KI-Agenten Aufgaben unterschiedlicher Komplexität bewältigen. Einige Agenten führen einfache Aufgaben aus, wie beispielsweise das Erstellen von Urlaubsanträgen oder das Erfassen von Benutzerdaten, während andere Datenbanken nach Produkten durchsuchen und Abhängigkeiten wie Lieferanten und Marken bewerten müssen. Daher ermöglicht „Smart Workflow“ Entwicklern, das zugrunde liegende KI-Modell je nach Anwendungsfall auszuwählen.
 
-To do this, simply enter the desired AI model in the `Model` section. By
-default, if no model is specified, Smart Workflow uses the model defined in the
-variable `AI.OpenAI.Model`.
+Geben Sie dazu einfach das gewünschte KI-Modell im Abschnitt „ `-Modell“` ein. Wenn kein Modell angegeben wird, verwendet Smart Workflow standardmäßig das Modell, das in der Variablen „ `AI.OpenAI.Model“` definiert ist.
 
-#### Output
+#### Ausgabe
 
-For enterprise-level AI applications, it is common to require the AI agent’s
-result in the form of a usable object. To address this need, the Smart Workflow
-AI agent can produce output as a Java object, ready to be used directly by Axon
-Ivy processes.
+Bei KI-Anwendungen auf Unternehmensebene ist es üblich, dass das Ergebnis des KI-Agenten in Form eines nutzbaren Objekts benötigt wird. Um diesem Bedarf gerecht zu werden, kann der Smart Workflow-KI-Agent Ergebnisse als Java-Objekt ausgeben, das direkt von Axon Ivy-Prozessen verwendet werden kann.
 
-You can easily configure this by specifying both the expected result type and
-the target object to map the result to in the `Output` section.
+Sie können dies ganz einfach konfigurieren, indem Sie im Abschnitt „ `-Ausgabe“ (` ) sowohl den erwarteten Ergebnistyp als auch das Zielobjekt angeben, dem das Ergebnis zugeordnet werden soll.
 
-![Other configurations](img/agent-other-configurations.png)
+![Weitere Konfigurationen](img/agent-other-configurations.png)
