@@ -1,75 +1,75 @@
-# Defining Tools
+# Werkzeuge definieren
 
-AI agents in Smart Workflow use tools to take action. A tool is a named, callable unit of logic that the agent discovers, selects, and invokes at runtime. Smart Workflow supports two kinds of tools.
-
----
-
-## Callable Process Tools
-
-We strongly encourage using callable subprocesses as tools. This approach aligns naturally with how Ivy developers already work and provides full access to the power of the process designer—such as error handling, dialogs, subprocess calls, and other Axon Ivy capabilities.
-
-You can turn any callable subprocess into a tool by simply adding the `tool` tag.
-
-**Steps:**
-
-1. Create a callable sub-process in your Axon Ivy project.
-2. Add the tag `tool` to the process.
-3. Write a clear `description` — this is what the agent reads to decide whether to call the tool.
-
-![Tool configurations](./img/tool-configurations.png)
+KI-Agenten in Smart Workflow nutzen Tools, um Aktionen auszuführen. Ein Tool ist eine benannte, aufrufbare Logikeinheit, die der Agent zur Laufzeit erkennt, auswählt und aufruft. Smart Workflow unterstützt zwei Arten von Tools.
 
 ---
 
-## Java Tools
+## Aufrufbare Prozess-Tools
 
-For advanced use cases, tool logic can also be implemented directly in Java. This is rarely needed — prefer callable processes whenever possible. Consider Java Tools only when the logic has no workflow steps and is better expressed as a plain Java class.
+Wir empfehlen nachdrücklich, aufrufbare Unterprozesse als Werkzeuge zu nutzen. Dieser Ansatz passt sich nahtlos an die Arbeitsweise der Ivy-Entwickler an und bietet uneingeschränkten Zugriff auf alle Funktionen des Prozess-Designers – wie beispielsweise Fehlerbehandlung, Dialoge, Aufrufe von Unterprozessen und weitere Axon Ivy-Funktionen.
 
-### Step 1 — Implement `SmartWorkflowTool`
+Sie können jeden aufrufbaren Unterprozess in ein Tool umwandeln, indem Sie einfach das Tag „ `“ des Tools „` “ hinzufügen.
+
+**Schritte:**
+
+1. Erstellen Sie in Ihrem Axon Ivy-Projekt einen aufrufbaren Unterprozess.
+2. Fügen Sie dem Prozess das Tag „ `-Tool“` hinzu.
+3. Verfassen Sie eine klare Beschreibung unter `` – diese liest der Agent, um zu entscheiden, ob er das Tool aufruft.
+
+![Werkzeugkonfigurationen](./img/tool-configurations.png)
+
+---
+
+## Java-Tools
+
+Für fortgeschrittene Anwendungsfälle kann die Tool-Logik auch direkt in Java implementiert werden. Dies ist jedoch selten erforderlich – nutzen Sie nach Möglichkeit lieber aufrufbare Prozesse. Ziehen Sie Java-Tools nur dann in Betracht, wenn die Logik keine Workflow-Schritte enthält und sich besser als einfache Java-Klasse darstellen lässt.
+
+### Schritt 1 – Implementierung des „ `“ SmartWorkflowTool`
 
 ```java
 public class MyTool implements SmartWorkflowTool {
 
   @Override
   public String name() {
-    return "myTool"; // name the agent uses to call this tool
+    return "myTool"; // Name, unter dem der Agent dieses Tool aufruft
   }
 
   @Override
   public String description() {
-    return "Describe what this tool does and when the agent should use it.";
+    return "Beschreiben Sie, was dieses Tool tut und wann der Agent es verwenden sollte.";
   }
 
   @Override
   public List<ToolParameter> parameters() {
     return List.of(
-        new ToolParameter("paramName", "description of this param", "java.lang.String")
+        new ToolParameter("paramName", "Beschreibung dieses Parameters", "java.lang.String")
     );
   }
 
   @Override
   public Object execute(Map<String, Object> args) {
     String value = (String) args.get("paramName");
-    // ... your logic
+    // ... Ihre Logik
     return result;
   }
 }
 ```
 
-The type is a string identifying the Java type. The following kinds are supported:
+Der Typ ist eine Zeichenfolge, die den Java-Typ identifiziert. Folgende Typen werden unterstützt:
 
-| Kind | Example |
-| --- | --- |
-| Primitive | `"int"`, `"boolean"`, `"double"` |
-| Java class | `"java.lang.String"`, `"com.example.MyClass"` |
-| List | `"java.util.List<java.lang.String>"`, `"java.util.List<com.example.MyClass>"` |
+| Art         | Beispiel                                                                      |
+| ----------- | ----------------------------------------------------------------------------- |
+| Primitiv    | `"int"`, `"boolean"`, `"double"`                                              |
+| Java-Klasse | `"java.lang.String"`, `"com.example.MyClass"`                                 |
+| Liste       | `"java.util.List<java.lang.String>"`, `"java.util.List<com.example.MyClass>"` |
 
-Arrays are not supported — use `List` instead.
+Arrays werden nicht unterstützt – verwenden Sie stattdessen „ `“ und „` “.
 
-The framework deserializes the agent's JSON arguments into the declared Java type automatically.
+Das Framework deserialisiert die JSON-Argumente des Agenten automatisch in den deklarierten Java-Typ.
 
-### Step 2 — Create a `SmartWorkflowToolsProvider`
+### Schritt 2 – Erstellen eines „ `“-SmartWorkflowToolsProvider`
 
-Group one or more tools in a provider class:
+Fassen Sie ein oder mehrere Werkzeuge in einer Anbieterklasse zusammen:
 
 ```java
 public class MyToolProvider implements SmartWorkflowToolsProvider {
@@ -80,53 +80,52 @@ public class MyToolProvider implements SmartWorkflowToolsProvider {
 }
 ```
 
-### Step 3 — Register via SPI
+### Schritt 3 – Registrierung über SPI
 
-Create the file `src/META-INF/services/com.axonivy.utils.smart.workflow.tools.provider.SmartWorkflowToolsProvider` and the tool provider:
+Erstellen Sie die Datei „ `“ unter „src/META-INF/services/com.axonivy.utils.smart.workflow.tools.provider.SmartWorkflowToolsProvider“` “ sowie den Tool-Provider:
 
 ```text
 com.example.MyToolProvider
 ```
 
-The framework loads all registered providers at startup.
+Das Framework lädt beim Start alle registrierten Anbieter.
 
 ---
 
 ## Demo: TaxCalculatorTool
 
-[`TaxCalculatorTool`](../smart-workflow-demo/src/com/axonivy/utils/smart/workflow/demo/tool/TaxCalculatorTool.java) shows a complete Java Tool that accepts a structured `Invoice` object and returns per-item tax calculations.
+[`TaxCalculatorTool`](../smart-workflow-demo/src/com/axonivy/utils/smart/workflow/demo/tool/TaxCalculatorTool.java) zeigt ein vollständiges Java-Tool, das ein strukturiertes „ `“-Rechnungsobjekt (` ) entgegennimmt und Steuerberechnungen für die einzelnen Positionen zurückgibt.
 
-Key points from the demo:
+Die wichtigsten Punkte aus der Demo:
 
-- Uses a custom type (`com.axonivy.utils.ai.Invoice`) as a parameter — the framework deserializes it automatically from the agent's JSON call.
-- Returns a typed result record (`TaxCalculationResult`) which the framework serializes back to the agent as JSON.
-- Registered in [`DemoToolProvider`](../smart-workflow-demo/src/com/axonivy/utils/smart/workflow/demo/tool/DemoToolProvider.java) via SPI.
+- Verwendet einen benutzerdefinierten Typ (`com.axonivy.utils.ai.Invoice`) als Parameter – das Framework deserialisiert diesen automatisch aus dem JSON-Aufruf des Agenten.
+- Gibt einen typisierten Ergebnisdatensatz zurück (`TaxCalculationResult`), den das Framework als JSON an den Agenten zurücküberträgt.
+- Über SPI in [`DemoToolProvider`](../smart-workflow-demo/src/com/axonivy/utils/smart/workflow/demo/tool/DemoToolProvider.java) registriert.
 
 ---
 
-## Standard Tools
+## Standardwerkzeuge
 
-Smart Workflow ships with built-in tools that agents can use out of the box.
+Smart Workflow verfügt über integrierte Tools, die die Mitarbeiter sofort nutzen können.
 
 ### webSearch
 
-Searches the web for current information and returns a list of results with titles, URLs, and content snippets.
-Agents select this tool automatically when they need up-to-date or factual information from the internet.
+Durchsucht das Internet nach aktuellen Informationen und liefert eine Liste mit Ergebnissen, die Titel, URLs und Inhaltsausschnitte enthält. Agenten wählen dieses Tool automatisch aus, wenn sie aktuelle oder sachliche Informationen aus dem Internet benötigen.
 
-**Configuration** (set in `variables.yaml`):
+**Konfigurations** en (festgelegt in `variables.yaml`):
 
-| Variable | Purpose | Default |
-| --- | --- | --- |
-| `AI.Tool.WebSearch.Engine` | Name of the search engine to use. Must match the `name()` of a registered `SmartWebSearchEngine`. If empty, the first available engine is used. | _(empty — first available)_ |
-| `AI.Tool.WebSearch.MaxResults` | Maximum number of search results returned per query | `5` |
-| `AI.Tool.WebSearch.WhitelistDomains` | Comma-separated list of allowed domains (e.g. `stackoverflow.com, github.com`). If empty, all domains are allowed. | _(empty — all domains)_ |
+| Variable                             | Zweck                                                                                                                                                                                                     | Standard                          |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `AI.Tool.WebSearch.Engine`           | Name der zu verwendenden Suchmaschine. Muss mit dem Namen „ `“ (` ) einer registrierten „ `SmartWebSearchEngine“ (`) übereinstimmen. Ist das Feld leer, wird die erste verfügbare Suchmaschine verwendet. | _(leer – erst bei Verfügbarkeit)_ |
+| `AI.Tool.WebSearch.MaxResults`       | Maximale Anzahl der pro Abfrage zurückgegebenen Suchergebnisse                                                                                                                                            | `5`                               |
+| `AI.Tool.WebSearch.WhitelistDomains` | Durch Kommas getrennte Liste der zulässigen Domains (z. B. `, stackoverflow.com, github.com,`). Ist das Feld leer, sind alle Domains zulässig.                                                            | _(leer – alle Domänen)_           |
 
-**Search engine**: By default the tool uses DuckDuckGo. Custom engines can be plugged in by implementing [`SmartWebSearchEngine`](../smart-workflow/src/com/axonivy/utils/smart/workflow/tools/web/SmartWebSearchEngine.java) and registering a [`SmartWebSearchEngineProvider`](../smart-workflow/src/com/axonivy/utils/smart/workflow/tools/web/SmartWebSearchEngineProvider.java) via SPI.
+**Suchmaschinen-**: Standardmäßig verwendet das Tool DuckDuckGo. Benutzerdefinierte Suchmaschinen können eingebunden werden, indem [`SmartWebSearchEngine`](../smart-workflow/src/com/axonivy/utils/smart/workflow/tools/web/SmartWebSearchEngine.java) implementiert und ein [`SmartWebSearchEngineProvider`](../smart-workflow/src/com/axonivy/utils/smart/workflow/tools/web/SmartWebSearchEngineProvider.java) über SPI registriert wird.
 
-**Using the tool in a process**: Assign `webSearch` to the `tools` field of an Agentic Process Call element:
+**Verwendung des Tools in einem Prozess**: Weisen Sie `webSearch` dem Feld „ `-Tools“` eines Agentic-Prozessaufruf-Elements zu:
 
 ```
 tools = ["webSearch"]
 ```
 
-See the [`WebSearchDemo`](../smart-workflow-demo/processes/Features/WebSearchDemo.p.json) process for a complete example.
+Ein vollständiges Beispiel finden Sie im [`WebSearchDemo`](../smart-workflow-demo/processes/Features/WebSearchDemo.p.json).
