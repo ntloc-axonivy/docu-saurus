@@ -4,8 +4,8 @@ Retrieval-Augmented Generation (RAG) verbessert KI-Antworten im Axon Ivy Smart W
 
 Der Arbeitsablauf ist ganz einfach:
 
-1. **** einlesen — Teilen Sie Ihre Dokumente in Blöcke auf, generieren Sie Einbettungen und speichern Sie diese in einem Vektorspeicher.
-2. **** durchsuchen — Wenn eine Frage eingeht, wird die Suchanfrage eingebettet, die ähnlichsten Chunks werden ermittelt und zurückgegeben.
+1. ** einlesen **— Teilen Sie Ihre Dokumente in Blöcke auf, generieren Sie Einbettungen und speichern Sie diese in einem Vektorspeicher.
+2. ** durchsuchen** — Wenn eine Frage eingeht, wird die Suchanfrage eingebettet, die ähnlichsten Chunks werden ermittelt und zurückgegeben.
 3. **Antwort** — Das LLM erhält die abgerufenen Chunks als Kontext und generiert eine kontextbezogene Antwort.
 
 Smart Workflow stellt aufrufbare Teilprozesse und KI-Tools bereit, die die Schritte 1 und 2 übernehmen. Schritt 3 wird vom Element „ `“ („AgenticProcessCall“` ) übernommen, das die LLM- und Tool-Aufrufe automatisch koordiniert.
