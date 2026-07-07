@@ -14,12 +14,17 @@ import type { SidebarsConfig } from '@docusaurus/plugin-content-docs';
  */
 const sidebars: SidebarsConfig = {
   tutorialSidebar: [
-    'FEATURES',
-    'DEMO',
-    'GUARDRAILS',
-    'MODELS',
-    'RAG',
-    'TOOLS',
+    {
+      type: 'doc',
+      id: 'overview',
+      label: 'Overview',
+    },
+    'features',
+    'demo',
+    'guardrails',
+    'models',
+    'rag',
+    'tools',
   ],
 };
 

@@ -82,7 +82,6 @@ const config: Config = {
   ],
 
   plugins: [
-    './src/plugins/orama-search-plugin',
     [
       require.resolve('@cmfcmf/docusaurus-search-local'),
       {

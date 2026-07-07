@@ -15,10 +15,15 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@cmfcmf/docusaurus-search-local": "^2.0.1",
     "@docusaurus/core": "3.10.1",
     "@docusaurus/faster": "3.10.1",
     "@docusaurus/preset-classic": "3.10.1",
     "@mdx-js/react": "^3.0.0",
+    "@orama/orama": "^3.1.18",
+    "@orama/plugin-data-persistence": "^3.1.18",
+    "@orama/stemmers": "^3.1.18",
+    "cheerio": "^1.2.0",
     "clsx": "^2.0.0",
     "prism-react-renderer": "^2.3.0",
     "react": "^19.0.0",
