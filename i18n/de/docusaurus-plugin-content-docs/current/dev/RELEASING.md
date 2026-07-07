@@ -1,60 +1,60 @@
-# Release Process
+# Freigabeprozess
 
-This document outlines the step-by-step process for creating a new release of Smart Workflow.
+In diesem Dokument wird der schrittweise Ablauf zur Erstellung einer neuen Version von Smart Workflow beschrieben.
 
-## Release Steps
+## Schritte zur Freigabe
 
-### Step 1: Update Dependencies
+### Schritt 1: Abhängigkeiten aktualisieren
 
-Check for [Renovate bot PR](https://github.com/axonivy-market/smart-workflow/pulls) and update dependencies if necessary.
+Überprüfen Sie, ob [Renovate-Bot-PR](https://github.com/axonivy-market/smart-workflow/pulls) vorhanden ist, und aktualisieren Sie gegebenenfalls die Abhängigkeiten.
 
-### Step 2: Verify Compatibility with Latest Designer
+### Schritt 2: Kompatibilität mit der neuesten Designer-Version prüfen
 
-1. Download the latest designer to your local PC
-2. Import Smart Workflow projects (including all provider projects in the `models/` folder) to the latest Designer
-3. Fix any problems such as:
-   - Compile errors
-   - Validation errors
-4. Convert all projects to the latest ivy version
+1. Laden Sie die neueste Version des Designers auf Ihren lokalen PC herunter
+2. Importieren Sie Smart-Workflow-Projekte (einschließlich aller Anbieterprojekte im Ordner „ `models/` “) in die neueste Version von Designer.
+3. Beheben Sie etwaige Probleme wie:
+   - Kompilierungsfehler
+   - Validierungsfehler
+4. Alle Projekte auf die neueste Ivy-Version umstellen
 
-### Step 3: Verify AI Provider Compatibility
+### Schritt 3: Kompatibilität des KI-Anbieters prüfen
 
-1. Run the [E2E build](https://github.com/axonivy-market/smart-workflow/actions/workflows/e2e.yml) to execute all integration tests for AI providers:
-   - **Branch:** `master`
-2. Fix any issues that arise during testing
+1. Führen Sie den [E2E-Build](https://github.com/axonivy-market/smart-workflow/actions/workflows/e2e.yml) aus, um alle Integrationstests für KI-Anbieter auszuführen:
+   - **Zweig:** `master`
+2. Beheben Sie alle Probleme, die während des Testens auftreten
 
-### Step 4: Update Release Drafter
+### Schritt 4: Release-Entwurf aktualisieren
 
-1. Run the [Release Drafter](https://github.com/axonivy-market/smart-workflow/actions/workflows/release-drafter.yml) build:
-   - **Branch:** `master`
-2. Go to the [Releases page](https://github.com/axonivy-market/smart-workflow/releases) to review the Next Release notes
-3. Check, update, and rebuild to ensure quality release notes
+1. Führen Sie den [Release Drafter](https://github.com/axonivy-market/smart-workflow/actions/workflows/release-drafter.yml)-Build aus:
+   - **Zweig:** `master`
+2. Rufen Sie die [Seite „Veröffentlichungen“](https://github.com/axonivy-market/smart-workflow/releases) auf, um die Hinweise zur nächsten Version einzusehen.
+3. Überprüfen, aktualisieren und neu erstellen, um qualitativ hochwertige Versionshinweise zu gewährleisten
 
-### Step 5: Create Release Build
+### Schritt 5: Release-Build erstellen
 
-1. Run the [Release](https://github.com/axonivy-market/smart-workflow/actions/workflows/release.yml) build with the following parameters:
-   - **Branch:** `master`
-   - **Version:** Verify the upcoming version from the [Releases](https://github.com/axonivy-market/smart-workflow/releases) page
-   - **Format example:** `14.0.0-b1` → Displays as `14.0.0-beta1` on the Releases page
+1. Führen Sie den [Release](https://github.com/axonivy-market/smart-workflow/actions/workflows/release.yml)-Build mit den folgenden Parametern aus:
+   - **Zweig:** `master`
+   - **Version:** Die kommende Version finden Sie auf der Seite [Veröffentlichungen](https://github.com/axonivy-market/smart-workflow/releases)
+   - **Formatbeispiel:** `14.0.0-b1` → Wird auf der Seite „Veröffentlichungen“ wie folgt angezeigt: `14.0.0-beta1`
 
-### Step 6: Merge Release PR
+### Schritt 6: Release-PR zusammenführen
 
-1. After the build from Step 5 completes successfully, a "Release" PR will be created
-2. Review all `pom.xml` files and revert the snapshot version:
-   - **Example:** `14.0.0-b1-SNAPSHOT` → `14.0.0-SNAPSHOT`
-3. Merge the PR to the `master` branch
+1. Nachdem der Build aus Schritt 5 erfolgreich abgeschlossen wurde, wird ein „Release“-PR erstellt.
+2. Überprüfen Sie alle „ `“-Dateien („pom.xml“ und „` “) und setzen Sie die Snapshot-Version zurück:
+   - **Beispiel:** `14.0.0-b1-SNAPSHOT` → `14.0.0-SNAPSHOT`
+3. Den PR in den Master-` -Zweig von `zusammenführen
 
-### Step 7: Publish Release Notes
+### Schritt 7: Versionshinweise veröffentlichen
 
-1. Navigate to the [Releases](https://github.com/axonivy-market/smart-workflow/releases) page
-2. Edit the "Next Release" with:
-   - **Tag:** The target release version
-   - **Release title:** The release version in full format
-   - **Example:** For version `14.0.0-b1`, use title `14.0.0-beta1`
-3. Publish the release
+1. Wechseln Sie zur Seite [Veröffentlichungen](https://github.com/axonivy-market/smart-workflow/releases)
+2. Bearbeiten Sie den Eintrag „Nächste Version“ wie folgt:
+   - **Tag:** Die angestrebte Release-Version
+   - **Titel der Veröffentlichung: „** “ – Die Veröffentlichung im Vollformat
+   - **Beispiel:** Für die Version `14.0.0-b1` verwenden Sie den Titel `14.0.0-beta1`
+3. Die Pressemitteilung veröffentlichen
 
-## Notes
+## Anmerkungen
 
-- Always double-check version numbers before creating releases
-- Ensure all tests pass before proceeding with the release
-- Keep release notes clear and comprehensive for users
+- Überprüfen Sie die Versionsnummern stets noch einmal, bevor Sie Releases erstellen.
+- Stellen Sie sicher, dass alle Tests erfolgreich abgeschlossen sind, bevor Sie mit der Veröffentlichung fortfahren.
+- Die Versionshinweise sollten für die Nutzer klar und umfassend sein
