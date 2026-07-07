@@ -8,4 +8,4 @@ The Smart Workflow Agent is available as a **callable subprocess** with signatur
 Portal/SmartWorkflowAgent:invokeAgent(String,String,List<String>,Class)
 ```
 
-> **Note:** This callable subprocess exists for Axon Ivy Portal features. For complete documentation on Smart Workflow interactions, refer to the Axon Ivy Portal documentation.
+> **Hinweis:** Dieser aufrufbare Teilprozess (Subprocess) existiert für Funktionen des Axon Ivy Portals. Die vollständige Dokumentation zu den Smart Workflow-Interaktionen finden Sie in der Dokumentation des Axon Ivy Portals
