@@ -1,72 +1,72 @@
-# Smart Workflow RAG
+# Intelligenter Workflow RAG
 
 Retrieval-Augmented Generation (RAG) verbessert KI-Antworten im Axon Ivy Smart Workflow, indem sie auf Ihren eigenen Dokumenten und Wissensdatenbanken verankert werden. Anstatt sich ausschließlich auf die Trainingsdaten des LLMs zu verlassen, ruft RAG relevante Inhalte aus einem Vektorspeicher ab und bindet diese als Kontext ein – und liefert so Antworten, die präzise, überprüfbar und spezifisch für Ihr Unternehmen sind.
 
-The workflow is straightforward:
+Der Arbeitsablauf ist ganz einfach:
 
-1. **Ingest** — Split your documents into chunks, generate embeddings, and store them in a vector store.
-2. **Search** — When a question arrives, embed the query, find the most similar chunks, and return them.
-3. **Answer** — The LLM receives the retrieved chunks as context and generates a grounded response.
+1. **** einlesen — Teilen Sie Ihre Dokumente in Blöcke auf, generieren Sie Einbettungen und speichern Sie diese in einem Vektorspeicher.
+2. **** durchsuchen — Wenn eine Frage eingeht, wird die Suchanfrage eingebettet, die ähnlichsten Chunks werden ermittelt und zurückgegeben.
+3. **Antwort** — Das LLM erhält die abgerufenen Chunks als Kontext und generiert eine kontextbezogene Antwort.
 
-Smart Workflow provides callable subprocesses and AI tools that handle steps 1 and 2. Step 3 is handled by the `AgenticProcessCall` element, which orchestrates the LLM and tool calls automatically.
+Smart Workflow stellt aufrufbare Teilprozesse und KI-Tools bereit, die die Schritte 1 und 2 übernehmen. Schritt 3 wird vom Element „ `“ („AgenticProcessCall“` ) übernommen, das die LLM- und Tool-Aufrufe automatisch koordiniert.
 
 ## OpenSearch
 
-[OpenSearch](https://opensearch.org/) is a scalable, open-source search and analytics engine that supports k-NN vector search — making it a natural fit for RAG workloads.
+[OpenSearch](https://opensearch.org/) ist eine skalierbare Open-Source-Such- und Analyse-Engine, die die k-NN-Vektorsuche unterstützt – und sich somit ideal für RAG-Anwendungen eignet.
 
-The `smart-workflow-opensearch-rag` module provides a callable subprocess for setup and an AI tool that an agent can invoke at runtime.
+Das Modul „ `smart-workflow-opensearch-rag“` bietet einen aufrufbaren Unterprozess für die Einrichtung sowie ein KI-Tool, das ein Agent zur Laufzeit aufrufen kann.
 
-#### Callable: `createVectorStore`
+#### Aufrufbar: `createVectorStore`
 
-Use this callable subprocess to create an OpenSearch index and ingest documents before the agent runs.
+Verwenden Sie diesen aufrufbaren Unterprozess, um einen OpenSearch-Index zu erstellen und Dokumente einzulesen, bevor der Agent ausgeführt wird.
 
-**Input parameters**
+**Eingabeparameter**
 
-| Parameter    | Type           | Description                    |
-| ------------ | -------------- | ------------------------------ |
-| `collection` | String         | Index name to ingest into.     |
-| `sources`    | List\<String\> | Plain text documents to index. |
+| Parameter  | Typ                   | Beschreibung                                               |
+| ---------- | --------------------- | ---------------------------------------------------------- |
+| `Sammlung` | Zeichenkette          | Name des Index, in den die Daten eingelesen werden sollen. |
+| `Quellen`  | Liste\<Zeichenkette\> | Zu indizierende Dokumente im Klartext.                     |
 
-**Result**
+**Ergebnis**
 
-| Parameter | Description                                                                                                                   |
-| --------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `result`  | Ingestion result. `answer` contains the number of indexed segments; `error` contains failure details if something went wrong. |
+| Parameter  | Beschreibung                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Ergebnis` | Ergebnis der Einlesung. `answer` enthält die Anzahl der indizierten Segmente; `error` enthält Details zum Fehler, falls etwas schiefgelaufen ist. |
 
 #### Tool: `openSearchSearch`
 
-Semantic search tool available to Smart Workflow agents. The agent calls this tool automatically when it needs to look up relevant content from a knowledge base.
+Den Smart-Workflow-Agenten steht ein semantisches Suchtool zur Verfügung. Der Agent ruft dieses Tool automatisch auf, wenn er relevante Inhalte aus einer Wissensdatenbank abrufen muss.
 
-**Input parameters**
+**Eingabeparameter**
 
-| Parameter    | Type    | Description                                                               |
-| ------------ | ------- | ------------------------------------------------------------------------- |
-| `collection` | String  | Index name to query.                                                      |
-| `query`      | String  | The search query to find relevant content.                                |
-| `maxResults` | Integer | Maximum segments to return. When null, `AI.RAG.MaxResults` is used.       |
-| `minScore`   | Double  | Minimum similarity score (0.0–1.0). When null, `AI.RAG.MinScore` is used. |
+| Parameter    | Typ          | Beschreibung                                                                                                 |
+| ------------ | ------------ | ------------------------------------------------------------------------------------------------------------ |
+| `Sammlung`   | Zeichenkette | Name des zu abfragenden Index.                                                                               |
+| `Abfrage`    | Zeichenkette | Die Suchanfrage zum Auffinden relevanter Inhalte.                                                            |
+| `maxResults` | Ganzzahl     | Maximale Anzahl der zurückzugebenden Segmente. Ist der Wert null, wird „ `“ (AI.RAG.MaxResults` ) verwendet. |
+| `minScore`   | Doppelt      | Mindestähnlichkeitswert (0,0–1,0). Ist dieser Wert nicht angegeben, wird „ `“ (AI.RAG.MinScore` ) verwendet. |
 
-**Result**
+**Ergebnis**
 
-| Parameter | Description                                                                      |
-| --------- | -------------------------------------------------------------------------------- |
-| `result`  | Search results containing matched content segments with their similarity scores. |
+| Parameter  | Beschreibung                                                                                 |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| `Ergebnis` | Suchergebnisse, die übereinstimmende Inhaltssegmente mit ihren Ähnlichkeitswerten enthalten. |
 
 ### Demo
 
-The `RagChatBotDemo` process in `smart-workflow-demo` is an interactive four-step wizard that demonstrates a complete RAG pipeline:
+Der Prozess „ `“ (RagChatBotDemo` ) unter `smart-workflow-demo` ist ein interaktiver vierstufiger Assistent, der eine vollständige RAG-Pipeline veranschaulicht:
 
-1. **Configuration** — Review the OpenSearch server URL, authentication type, and embedding model settings loaded from Ivy variables. Test the connection before proceeding.
-2. **Upload & Embed** — Enter an index name, upload `.txt` or `.md` files, and embed the documents into OpenSearch as searchable vector chunks.
-3. **Results** — Inspect all indexed chunks with their source file and a content preview.
-4. **Chat** — Ask questions answered by an AI agent that retrieves grounded context from the indexed documents using the `openSearchSearch` tool.
+1. **Konfigurations** en — Überprüfen Sie die URL des OpenSearch-Servers, die Authentifizierungsart und die Einstellungen für das Einbettungsmodell, die aus den Ivy-Variablen geladen wurden. Testen Sie die Verbindung, bevor Sie fortfahren.
+2. **Hochladen und Einbetten von „** “ — Geben Sie einen Indexnamen ein, laden Sie Dateien im Format „ `.txt“, „` “ oder „ `.md“ sowie „` “ hoch und betten Sie die Dokumente als durchsuchbare Vektor-Chunks in OpenSearch ein.
+3. **Ergebnisse** — Alle indizierten Chunks mit ihrer Quelldatei und einer Inhaltsvorschau anzeigen.
+4. **Chat** — Stellen Sie Fragen, die von einem KI-Agenten beantwortet werden, der mithilfe des Tools „ `“ (openSearchSearch` ) kontextbezogene Informationen aus den indizierten Dokumenten abruft.
 
-**Prerequisites:**
+**Voraussetzungen:**
 
 ```properties
-AI.DefaultProvider           = OpenAI          # or AzureOpenAI / Gemini
+AI.DefaultProvider           = OpenAI          # oder AzureOpenAI / Gemini
 AI.RAG.OpenSearch.Url        = https://my-opensearch.us-east-1.es.amazonaws.com
-# AI.RAG.EmbeddingModel.Provider can be left blank if AI.DefaultProvider supports embedding
+# AI.RAG.EmbeddingModel.Provider kann leer gelassen werden, wenn AI.DefaultProvider Embedding unterstützt
 ```
 
-> **Tip:** Our [Devcontainer](dev/DEVCONTAINER.md) is pre-configured with an OpenSearch service, so you can skip the server setup and `AI.RAG.OpenSearch.Url` configuration. In that environment you only need to define the AI Provider API key.
+> **Tipp:** Unser [Devcontainer](dev/DEVCONTAINER.md) ist bereits mit einem OpenSearch-Dienst vorkonfiguriert, sodass Sie die Server-Einrichtung überspringen und die Konfiguration unter `AI.RAG.OpenSearch.Url` vornehmen können. In dieser Umgebung müssen Sie lediglich den API-Schlüssel des AI-Anbieters angeben.
