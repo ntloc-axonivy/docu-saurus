@@ -1,40 +1,31 @@
 # 🧪 Testing
 
-Features of smart-workflow are highly covered by tests in order to keep them
-stable and easy to evolve. All test sources live under `smart-workflow-test`.
+Features of smart-workflow are highly covered by tests in order to keep them stable and easy to evolve. All test sources live under `smart-workflow-test`.
 
 ## 📂 Test Categories
 
 ### ⚡ Unit Tests
 
-Small, fast-executing tests. None of them should call third-party services on
-the wire or cause long execution times.
+Small, fast-executing tests. None of them should call third-party services on the wire or cause long execution times.
 
 - Plain JUnit 5 — pure Java logic, no Ivy runtime needed
 - `@IvyTest` — code reads Ivy variables or uses SPI loading
 - `@IvyProcessTest` — code requires a full Ivy process context
-- `@RestResourceTest` — lightweight REST-resource tests; preferred when mocking
-  external LLM interactions to keep tests isolated and fast. See the
-  [Mocking](#-mocking) section.
+- `@RestResourceTest` — lightweight REST-resource tests; preferred when mocking external LLM interactions to keep tests isolated and fast. See the [Mocking](#-mocking) section.
 
 ### 🐳 Integration Tests
 
-Tests with heavy infrastructure involved, started automatically via Docker /
-Testcontainers. Use `@Testcontainers` together with `@IvyTest`, for example to
-spin up an OpenSearch node.
+Tests with heavy infrastructure involved, started automatically via Docker / Testcontainers. Use `@Testcontainers` together with `@IvyTest`, for example to spin up an OpenSearch node.
 
 - These classes are suffixed with `ContainerTest` or `IT`.
-- Not part of the regular CI build — run nightly via the
-  [`IT-Build`](../../.github/workflows/it.yml) workflow.
+- Not part of the regular CI build — run nightly via the [`IT-Build`](../../.github/workflows/it.yml) workflow.
 
 ### 🌐 End-to-End Tests
 
-Tests that call real LLM models over the network. API keys are required and are
-passed via system properties (e.g. `-DOPEN_AI_API_KEY=…`).
+Tests that call real LLM models over the network. API keys are required and are passed via system properties (e.g. `-DOPEN_AI_API_KEY=…`).
 
 - Classes are named `*E2E` (e.g. `OpenAiModelE2E`).
-- Not part of the regular CI build — run weekly (Sunday) via the
-  [`E2E-Build`](../../.github/workflows/e2e.yml) workflow.
+- Not part of the regular CI build — run weekly (Sunday) via the [`E2E-Build`](../../.github/workflows/e2e.yml) workflow.
 
 Example — calling a real OpenAI model and asserting structured output:
 
@@ -61,21 +52,15 @@ class OpenAiModelE2E {
 
 ## 🎭 Mocking
 
-CI unit tests must run fast and independently, but the code naturally interacts
-with slow remote LLMs. Instead of calling real services, static responses
-captured from real model interactions are replayed. Follow these three steps to
-write such a test:
+CI unit tests must run fast and independently, but the code naturally interacts with slow remote LLMs. Instead of calling real services, static responses captured from real model interactions are replayed. Follow these three steps to write such a test:
 
 **1. Create a Demo or Test process that invokes an Agent / LLM.**
 
-The Process should call an Agent exactly in the manner you like to test. Define
-'messages', 'tools', 'output', ... as needed.
+The Process should call an Agent exactly in the manner you like to test. Define 'messages', 'tools', 'output', ... as needed.
 
 **2. Record the real REST response.**
 
-Enable the Runtime Log at filter level `Trace`, invoke the process against a
-live model, then copy the logged response body into a JSON file next to your
-test class (e.g. `response1.json`, `response2.json`):
+Enable the Runtime Log at filter level `Trace`, invoke the process against a live model, then copy the logged response body into a JSON file next to your test class (e.g. `response1.json`, `response2.json`):
 
 ```json
 {
@@ -95,14 +80,9 @@ test class (e.g. `response1.json`, `response2.json`):
 }
 ```
 
-**3. Write a `@RestResourceTest` that drives the process and mocks LLM
-responses.**
+**3. Write a `@RestResourceTest` that drives the process and mocks LLM responses.**
 
-The test starts the real Ivy process via `BpmClient` and asserts on its output
-data. `MockOpenAI.defineChat(handler)` intercepts every outgoing LLM HTTP call
-before it hits the network and returns the pre-recorded file instead — the
-process under test is unaware of the swap. A multi-turn conversation returns
-different files depending on how far the conversation has progressed:
+The test starts the real Ivy process via `BpmClient` and asserts on its output data. `MockOpenAI.defineChat(handler)` intercepts every outgoing LLM HTTP call before it hits the network and returns the pre-recorded file instead — the process under test is unaware of the swap. A multi-turn conversation returns different files depending on how far the conversation has progressed:
 
 ```java
 @RestResourceTest
@@ -132,8 +112,7 @@ class TestToolDemo {
 
 ### 📋 Asserting log output
 
-Use `LoggerAccess` as a JUnit 5 extension to capture and assert log messages
-emitted during a test:
+Use `LoggerAccess` as a JUnit 5 extension to capture and assert log messages emitted during a test:
 
 ```java
 @RegisterExtension
