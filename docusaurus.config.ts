@@ -5,8 +5,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Smart Workflow',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -53,6 +52,12 @@ const config: Config = {
           // Remove this to remove the "edit this page" links.
           editUrl:
             'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          versions: {
+            current: {
+              label: '14.0.0-beta6', // <--- Change "Next" to whatever you want here!
+              // path: 'dev',       // (Optional) You can also change the URL from /docs/next/ to /docs/dev/
+            },
+          },
         },
         blog: {
           showReadingTime: true,
@@ -83,9 +88,9 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'My Site',
+      title: 'Smart Workflow',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Smart Workflow Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -95,10 +100,14 @@ const config: Config = {
           position: 'left',
           label: 'Tutorial',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        // {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/axonivy-market/smart-workflow',
           label: 'GitHub',
+          position: 'right',
+        },
+        {
+          type: 'docsVersionDropdown',
           position: 'right',
         },
         {
