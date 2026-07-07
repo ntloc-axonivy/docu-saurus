@@ -1,33 +1,33 @@
-# 🧪 Testing
+# 🧪 Testen
 
-Features of smart-workflow are highly covered by tests in order to keep them stable and easy to evolve. All test sources live under `smart-workflow-test`.
+Die Funktionen von smart-workflow werden umfassend getestet, um ihre Stabilität zu gewährleisten und eine einfache Weiterentwicklung zu ermöglichen. Alle Testquellen sind unter `smart-workflow-test` zu finden.
 
-## 📂 Test Categories
+## 📂 Testkategorien
 
-### ⚡ Unit Tests
+### ⚡ Unit-Tests
 
-Small, fast-executing tests. None of them should call third-party services on the wire or cause long execution times.
+Kleine, schnell ausgeführte Tests. Keiner von ihnen sollte über das Netzwerk Dienste von Drittanbietern aufrufen oder lange Ausführungszeiten verursachen.
 
-- Plain JUnit 5 — pure Java logic, no Ivy runtime needed
-- `@IvyTest` — code reads Ivy variables or uses SPI loading
-- `@IvyProcessTest` — code requires a full Ivy process context
-- `@RestResourceTest` — lightweight REST-resource tests; preferred when mocking external LLM interactions to keep tests isolated and fast. See the [Mocking](#-mocking) section.
+- Einfaches JUnit 5 – reine Java-Logik, keine Ivy-Laufzeitumgebung erforderlich
+- `@IvyTest` — Der Code liest Ivy-Variablen aus oder nutzt das SPI-Laden
+- `@IvyProcessTest` — Der Code benötigt einen vollständigen Ivy-Prozesskontext
+- `@RestResourceTest` — schlanke REST-Ressourcentests; vorzuziehen, wenn externe LLM-Interaktionen simuliert werden, um die Tests isoliert und schnell zu halten. Siehe den Abschnitt [Mocking](#-mocking).
 
-### 🐳 Integration Tests
+### 🐳 Integrationstests
 
-Tests with heavy infrastructure involved, started automatically via Docker / Testcontainers. Use `@Testcontainers` together with `@IvyTest`, for example to spin up an OpenSearch node.
+Tests mit umfangreicher Infrastruktur, die automatisch über Docker/Testcontainers gestartet werden. Verwenden Sie `@Testcontainers` zusammen mit `@IvyTest`, um beispielsweise einen OpenSearch-Knoten zu starten.
 
-- These classes are suffixed with `ContainerTest` or `IT`.
-- Not part of the regular CI build — run nightly via the [`IT-Build`](../../.github/workflows/it.yml) workflow.
+- Diese Klassen haben die Endungen „ `“, „ContainerTest“` “ oder „ `“, „IT“` “.
+- Nicht Teil des regulären CI-Builds – wird nächtlich über den Workflow [`IT-Build`](../../.github/workflows/it.yml) ausgeführt.
 
-### 🌐 End-to-End Tests
+### 🌐 End-to-End-Tests
 
-Tests that call real LLM models over the network. API keys are required and are passed via system properties (e.g. `-DOPEN_AI_API_KEY=…`).
+Tests, die über das Netzwerk echte LLM-Modelle aufrufen. Dazu sind API-Schlüssel erforderlich, die über Systemeigenschaften übergeben werden (z. B. `-DOPEN_AI_API_KEY=…`).
 
-- Classes are named `*E2E` (e.g. `OpenAiModelE2E`).
-- Not part of the regular CI build — run weekly (Sunday) via the [`E2E-Build`](../../.github/workflows/e2e.yml) workflow.
+- Die Klassen tragen die Bezeichnungen „ ` “ und „E2E` “ (z. B. „ `“ und „OpenAiModelE2E“`).
+- Ist nicht Teil des regulären CI-Builds – wird wöchentlich (sonntags) über den Workflow [`E2E-Build`](../../.github/workflows/e2e.yml) ausgeführt.
 
-Example — calling a real OpenAI model and asserting structured output:
+Beispiel – Aufruf eines echten OpenAI-Modells und Überprüfung der strukturierten Ausgabe:
 
 ```java
 @IvyProcessTest
@@ -50,17 +50,17 @@ class OpenAiModelE2E {
 
 ---
 
-## 🎭 Mocking
+## 🎭 Spott
 
-CI unit tests must run fast and independently, but the code naturally interacts with slow remote LLMs. Instead of calling real services, static responses captured from real model interactions are replayed. Follow these three steps to write such a test:
+CI-Unit-Tests müssen schnell und unabhängig voneinander ablaufen, doch der Code interagiert naturgemäß mit langsamen Remote-LLMs. Anstatt echte Dienste aufzurufen, werden statische Antworten, die aus echten Modellinteraktionen erfasst wurden, wiedergegeben. Befolgen Sie diese drei Schritte, um einen solchen Test zu schreiben:
 
-**1. Create a Demo or Test process that invokes an Agent / LLM.**
+**1. Erstellen Sie einen Demo- oder Testprozess, der einen Agenten bzw. ein LLM aufruft.**
 
-The Process should call an Agent exactly in the manner you like to test. Define 'messages', 'tools', 'output', ... as needed.
+Der Prozess sollte einen Agenten genau so aufrufen, wie Sie es testen möchten. Definieren Sie „Nachrichten“, „Werkzeuge“, „Ausgabe“ usw. nach Bedarf.
 
-**2. Record the real REST response.**
+**2. Zeichnen Sie die tatsächliche REST-Antwort auf.**
 
-Enable the Runtime Log at filter level `Trace`, invoke the process against a live model, then copy the logged response body into a JSON file next to your test class (e.g. `response1.json`, `response2.json`):
+Aktivieren Sie das Laufzeitprotokoll auf Filterebene `Trace`, führen Sie den Prozess für ein Live-Modell aus und kopieren Sie anschließend den protokollierten Antworttext in eine JSON-Datei neben Ihrer Testklasse (z. B. `response1.json`, `response2.json`):
 
 ```json
 {
@@ -80,9 +80,9 @@ Enable the Runtime Log at filter level `Trace`, invoke the process against a liv
 }
 ```
 
-**3. Write a `@RestResourceTest` that drives the process and mocks LLM responses.**
+**3. Schreiben Sie einen `@RestResourceTest`, der den Prozess steuert und LLM-Antworten simuliert.**
 
-The test starts the real Ivy process via `BpmClient` and asserts on its output data. `MockOpenAI.defineChat(handler)` intercepts every outgoing LLM HTTP call before it hits the network and returns the pre-recorded file instead — the process under test is unaware of the swap. A multi-turn conversation returns different files depending on how far the conversation has progressed:
+Der Test startet den eigentlichen Ivy-Prozess über `BpmClient` und führt eine Überprüfung der Ausgabedaten durch. `MockOpenAI.defineChat(handler)` fängt jeden ausgehenden LLM-HTTP-Aufruf ab, bevor dieser das Netzwerk erreicht, und gibt stattdessen die vorab aufgezeichnete Datei zurück – der zu testende Prozess bemerkt diesen Austausch nicht. Bei einem mehrrundigen Gespräch werden je nach Fortschritt des Gesprächs unterschiedliche Dateien zurückgegeben:
 
 ```java
 @RestResourceTest
@@ -92,14 +92,14 @@ class TestToolDemo {
   void setup(AppFixture fixture, ResourceResponder responder) {
     fixture.var(OpenAiConf.BASE_URL, OpenAiTestClient.localMockApiUrl("tool-demo"));
     fixture.var(OpenAiConf.API_KEY, "");
-    MockOpenAI.defineChat(request -> respond(request, responder));
+    MockOpenAI.defineChat(request -&gt; respond(request, responder));
   }
 
   private Response respond(JsonNode request, ResourceResponder responder) {
     var messages = (ArrayNode) request.get("messages");
-    return messages.size() <= 2
-        ? responder.send("response1.json")  // first turn: tool-call request
-        : responder.send("response2.json"); // second turn: final answer
+    return messages.size() &lt;= 2
+        ? responder.send("response1.json")  // erster Durchgang: Tool-Aufruf-Anfrage
+        : responder.send("response2.json"); // zweiter Durchgang: endgültige Antwort
   }
 
   @Test
@@ -110,9 +110,9 @@ class TestToolDemo {
 }
 ```
 
-### 📋 Asserting log output
+### 📋 Log-Ausgabe anzeigen
 
-Use `LoggerAccess` as a JUnit 5 extension to capture and assert log messages emitted during a test:
+Verwenden Sie „ `“ (LoggerAccess` ) als JUnit-5-Erweiterung, um während eines Tests ausgegebene Protokollmeldungen zu erfassen und zu überprüfen:
 
 ```java
 @RegisterExtension
@@ -120,7 +120,7 @@ LoggerAccess log = new LoggerAccess(LoggingHttpClient.class.getName());
 
 @Test
 void httpCallIsLogged(BpmClient client) {
-  // ... trigger action
-  assertThat(log.infos()).anyMatch(line -> line.contains("POST /v1/chat/completions"));
+  // ... Aktion auslösen
+  assertThat(log.infos()).anyMatch(line -&gt; line.contains("POST /v1/chat/completions"));
 }
 ```
