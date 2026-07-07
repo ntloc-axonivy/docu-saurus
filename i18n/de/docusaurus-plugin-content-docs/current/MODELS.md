@@ -1,12 +1,12 @@
-# Chat Models
+# Chat-Models
 
-In the `models` directory we maintain projects that supply a ChatModelProvider.
+Im Verzeichnis „ `-Modelle“ (` ) verwalten wir Projekte, die einen „ChatModelProvider“ bereitstellen.
 
-## Contributing
+## Beiträge leisten
 
-We are open to support more ChatModels from any provider. If you miss your preferred one, simply contribute it to this space.
+Wir sind offen dafür, weitere ChatModels von beliebigen Anbietern zu unterstützen. Falls Ihr bevorzugtes Modell fehlt, fügen Sie es einfach hier hinzu.
 
-Create a directory `models/smart-workflow-PROVIDER`, replacing PROVIDER with your concrete vendor. For the project coordinates, please align to our existing workspace:
+Erstellen Sie ein Verzeichnis „ `models/smart-workflow-PROVIDER“` und ersetzen Sie dabei „PROVIDER“ durch den Namen Ihres konkreten Anbieters. Passen Sie die Projektkoordinaten bitte an unseren bestehenden Arbeitsbereich an:
 
 ```xml
 <groupId>com.axonivy.utils.ai</groupId>
@@ -14,76 +14,76 @@ Create a directory `models/smart-workflow-PROVIDER`, replacing PROVIDER with you
   <packaging>iar</packaging>
 ```
 
-Make sure to include your project in the build by adding your provider in the main [module build](../pom.xml).
+Stellen Sie sicher, dass Ihr Projekt in den Build einbezogen wird, indem Sie Ihren Provider im Hauptmodul [module build](../pom.xml) hinzufügen.
 
-## Implementation
+## Umsetzung
 
-Implement your custom [ChatModelProvider](../smart-workflow/src/com/axonivy/utils/smart/workflow/model/spi/ChatModelProvider.java) within your project.
+Implementieren Sie Ihren benutzerdefinierten [ChatModelProvider](../smart-workflow/src/com/axonivy/utils/smart/workflow/model/spi/ChatModelProvider.java) in Ihrem Projekt.
 
-You need to register your implementation in a file: `src/META-INF/services/com.axonivy.utils.smart.workflow.model.spi.ChatModelProvider` The file must contain a single line, stating your implementation type name.
+Sie müssen Ihre Implementierung in einer Datei registrieren: `src/META-INF/services/com.axonivy.utils.smart.workflow.model.spi.ChatModelProvider` Die Datei muss eine einzige Zeile enthalten, in der der Name Ihres Implementierungstyps angegeben ist.
 
-## Variables
+## Variablen
 
-Every provider has its own set of variables. Please contribute your ChatModel provider variables to the `Variables.AI.Providers.PROVIDER`.
+Jeder Anbieter hat seine eigenen Variablen. Bitte tragen Sie die Variablen Ihres ChatModel-Anbieters in die Datei „ `Variables.AI.Providers.PROVIDER“ unter` ein.
 
 ```yaml
-Variables:
+Variablen:
   AI:
-    Providers:
+    Anbieter:
       PROVIDER:
-        #[password]
+        #[Passwort]
         APIKey: ${decrypt:}
         ...
 ```
 
-Your custom `variables.yaml` should also be copied and listed into the README.md setup description, that invites users to use this provider.
+Ihre benutzerdefinierte Datei „ `variables.yaml“` sollte ebenfalls kopiert und in der Einrichtungsbeschreibung in der Datei „README.md“ aufgeführt werden, die Nutzer dazu einlädt, diesen Anbieter zu nutzen.
 
-Furthermore, please enrich the global enumeration of available providers [variables.yaml](../smart-workflow/config/variables.yaml) to list your provider. See the enumeration called `AI.DefaultProvider`.
+Bitte ergänzen Sie außerdem die globale Auflistung der verfügbaren Anbieter [variables.yaml](../smart-workflow/config/variables.yaml), um Ihren Anbieter aufzunehmen. Siehe dazu die Auflistung „ `“ unter AI.DefaultProvider`.
 
-### Checklist
+### Checkliste
 
-- [ ] custom variables.yaml in your provider
-- [ ] list your provider in `AI.DefaultProvider` of [variables.yaml](../smart-workflow/config/variables.yaml)
-- [ ] list your model in the Model section of the product [README.md](../smart-workflow-product/README.md)
-- [ ] extend the product [build](../smart-workflow-product/pom.xml) to interpolate your variables into README.md
+- [ ] „custom variables.yaml“ in Ihrem Provider
+- [ ] Tragen Sie Ihren Provider unter „ `“ in „AI.DefaultProvider“` aus [variables.yaml](../smart-workflow/config/variables.yaml) ein.
+- [ ] Trage dein Modell im Abschnitt „Modell“ der Datei [README.md](../smart-workflow-product/README.md) des Produkts ein
+- [ ] Erweitern Sie das Produkt [build](../smart-workflow-product/pom.xml), um Ihre Variablen in die Datei „README.md“ einzufügen
 
-## File Extraction Support
+## Unterstützung bei der Dateiextraktion
 
-| Provider         | Model(s)                                                               | PNG / JPEG | PDF |
-| ---------------- | ---------------------------------------------------------------------- | :--------: | :-: |
-| **OpenAI**       | `gpt-4o`, `gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`, `gpt-5`           |     ✓      |  ✓  |
-| **Azure OpenAI** | Any vision-capable deployment (e.g. `gpt-4o`, `gpt-4.1` family)        |     ✓      |  ✓  |
-| **Gemini**       | All models (`gemini-1.5-*`, `gemini-2.0-*`, `gemini-2.5-*`)            |     ✓      |  ✓  |
-| **xAI**          | All `grok-4-1-*` models                                                |     ✓      |  —  |
-| **Anthropic**    | All models (`claude-opus-*`, `claude-sonnet-*`, `claude-haiku-*`)      |     ✓      |  ✓  |
-| **Ollama**       | Vision-capable models only (`llava`, `llama3.2-vision`, `gemma3`, ...) |     ✓      |  —  |
+| Anbieter         | Modell(e)                                                                                 | PNG / JPEG | PDF |
+| ---------------- | ----------------------------------------------------------------------------------------- | :--------: | :-: |
+| **OpenAI**       | `gpt-4o`, `gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`, `gpt-5`                              |     ✓      |  ✓  |
+| **Azure OpenAI** | Jede Implementierung mit Bildverarbeitungsfunktionen (z. B. `gpt-4o`, `gpt-4.1` -Familie) |     ✓      |  ✓  |
+| **Zwillinge**    | Alle Modelle (`gemini-1.5-*`, `gemini-2.0-*`, `gemini-2.5-*`)                             |     ✓      |  ✓  |
+| **xAI**          | Alle Modelle der Baureihen „ `“, „grok-4-1-*“ und „` “                                    |     ✓      |  —  |
+| **Anthropic**    | Alle Modelle (`claude-opus-*`, `claude-sonnet-*`, `claude-haiku-*`)                       |     ✓      |  ✓  |
+| **Ollama**       | Nur Modelle mit Bildverarbeitungsfunktionen (`llava`, `llama3.2-vision`, `gemma3`, ...)   |     ✓      |  —  |
 
-**Note for Azure OpenAI**: file extraction capability depends on the underlying model of your deployment, not the deployment name itself. Make sure your deployment uses a vision-capable model.
+**Hinweis für Azure OpenAI-**: Die Fähigkeit zur Dateiextraktion hängt vom zugrunde liegenden Modell Ihrer Bereitstellung ab, nicht vom Namen der Bereitstellung selbst. Stellen Sie sicher, dass Ihre Bereitstellung ein visuellfähiges Modell verwendet.
 
-**Note for xAI**: PDF files are not natively supported by the xAI API. To process PDFs with Grok models, convert them to images first before passing them to Axon Ivy Smart Workflow.
+**Hinweis für xAI-**: PDF-Dateien werden von der xAI-API nicht nativ unterstützt. Um PDF-Dateien mit Grok-Modellen zu verarbeiten, konvertieren Sie diese zunächst in Bilder, bevor Sie sie an Axon Ivy Smart Workflow übergeben.
 
-**Note for Anthropic**: Images and PDFs can be sent via URL or base64-encoded data, both supporting text extraction and visual understanding (charts, diagrams, layouts).
+**Hinweis zu Anthropic**: Bilder und PDF-Dateien können über eine URL oder als Base64-kodierte Daten übermittelt werden; beide Formate unterstützen die Textextraktion und das visuelle Verständnis (Diagramme, Grafiken, Layouts).
 
-**Note for Ollama**: Image support requires a vision-capable model to be pulled (e.g. `ollama pull llava`); text-only models will reject image input. PDFs are not natively supported — convert them to images first.
+**Hinweis zu Ollama**: Für die Bildunterstützung muss ein visuellfähiges Modell abgerufen werden (z. B. `ollama pull llava`); reine Textmodelle lehnen Bildeingaben ab. PDFs werden nicht nativ unterstützt – konvertieren Sie diese daher zunächst in Bilder.
 
-When contributing a new provider, document its multimodal support in this table.
+Wenn Sie einen neuen Anbieter hinzufügen, tragen Sie dessen multimodale Unterstützung in diese Tabelle ein.
 
-### Payload Size Limits
+### Beschränkungen hinsichtlich der Nutzlastgröße
 
-File content is base64-encoded before being sent to the provider. The limits below apply to the encoded payload and vary by provider. There is no size cap enforced by Axon Ivy Smart Workflow itself — developers are responsible for ensuring files stay within the bounds of their chosen provider.
+Der Dateiinhalt wird vor dem Versand an den Anbieter Base64-kodiert. Die unten aufgeführten Beschränkungen gelten für die kodierte Nutzlast und variieren je nach Anbieter. Axon Ivy Smart Workflow selbst legt keine Größenbeschränkung fest – die Entwickler sind dafür verantwortlich, sicherzustellen, dass die Dateien die vom jeweiligen Anbieter festgelegten Grenzen einhalten.
 
-## Libraries
+## Bibliotheken
 
-Smart-workflow providers are built upon existing LangChain4j providers. Please exclude dependencies from your `pom.xml`, which are already part of smart-workflow. Classically this will be the `langchain4j-core` and `langchain4j-http-client`
+Smart-Workflow-Provider basieren auf bestehenden LangChain4j-Providern. Bitte schließen Sie in Ihrer „ `“-pom.xml` diejenigen Abhängigkeiten aus, die bereits Teil von Smart-Workflow sind. In der Regel sind dies „ `“, „langchain4j-core“` und „ `“ sowie „langchain4j-http-client“.`
 
-## Testing
+## Testen
 
-Tests for your model provider should be written in the common `smart-workflow-test` project. Provider specific functionality should be enclosed in `src_test/com/axonivy/utils/smart/workflow/model/PROVIDER`.
+Tests für Ihren Modell-Provider sollten im gemeinsamen Projekt „ `smart-workflow-test“ (` ) geschrieben werden. Providerspezifische Funktionen sollten in „ `src_test/com/axonivy/utils/smart/workflow/model/PROVIDER“ (`) untergebracht werden.
 
-Therefore it's ok to add a dependency from the common test project to your new model provider.
+Daher ist es in Ordnung, eine Abhängigkeit vom gemeinsamen Testprojekt zu Ihrem neuen Modell-Provider hinzuzufügen.
 
 ## Demo
 
-We expect all providers to work in the same manner, therefore no extra demonstration process needs to be added in the demo project.
+Wir gehen davon aus, dass alle Anbieter auf die gleiche Weise arbeiten; daher muss im Demoprojekt kein zusätzlicher Demonstrationsprozess hinzugefügt werden.
 
-Do not add dependencies to additional model providers to the `smart-workflow-demo` project.
+Fügen Sie dem Projekt „ `smart-workflow-demo“ (` ) keine Abhängigkeiten zu weiteren Modellanbietern hinzu.
