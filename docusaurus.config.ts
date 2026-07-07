@@ -81,6 +81,19 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    './src/plugins/orama-search-plugin',
+    [
+      require.resolve('@cmfcmf/docusaurus-search-local'),
+      {
+        indexDocs: true,
+        indexBlog: false,
+        indexPages: true,
+        language: 'en',
+      },
+    ],
+  ],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
@@ -111,9 +124,13 @@ const config: Config = {
           position: 'right',
         },
         {
-          type: "localeDropdown",
-          position: 'right'
-        }
+          type: 'search',
+          position: 'right',
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
+        },
       ],
     },
     footer: {
