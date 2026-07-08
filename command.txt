@@ -1,0 +1,9 @@
+// add new language
+npm run write-translations -- --locale jp
+
+// release version
+npm run docusaurus docs:version 14.0.0-beta5
+
+
+
+
