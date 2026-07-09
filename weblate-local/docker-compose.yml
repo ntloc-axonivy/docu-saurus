@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:18-alpine
+    container_name: weblate-db
+    environment:
+      POSTGRES_USER: weblate
+      POSTGRES_PASSWORD: weblate_db_password
+      POSTGRES_DB: weblate
+    volumes:
+      - weblate-db-data:/var/lib/postgresql/data
+    restart: always
+
+  cache:
+    image: valkey/valkey:9.0-alpine
+    container_name: weblate-cache
+    command: ["valkey-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - weblate-cache-data:/data
+    restart: always
+
+  weblate:
+    image: weblate/weblate:latest
+    container_name: weblate-app
+    ports:
+      - "8080:8080"
+    environment:
+      WEBLATE_SITE_DOMAIN: localhost:8080
+      WEBLATE_ALLOWED_HOSTS: localhost,127.0.0.1
+      WEBLATE_ADMIN_PASSWORD: admin_password_here
+      WEBLATE_ADMIN_EMAIL: admin@example.com
+      
+      # Database configuration
+      POSTGRES_HOST: database
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: weblate
+      POSTGRES_PASSWORD: weblate_db_password
+      POSTGRES_DB: weblate
+      
+      # Cache configuration
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+      
+      # Disable outbound email requirements for local testing
+      WEBLATE_EMAIL_HOST: ""
+    volumes:
+      - weblate-data:/app/data
+      # Mount the parent Docusaurus workspace into Weblate for offline local testing
+      - ../:/app/data/my-docusaurus-site
+    depends_on:
+      - database
+      - cache
+    restart: always
+
+volumes:
+  weblate-db-data:
+  weblate-cache-data:
+  weblate-data:
